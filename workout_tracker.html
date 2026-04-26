@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ted's KB Program</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f0f0f; --bg2:#181818; --bg3:#222; --border:#2e2e2e;
+  --text:#f0f0f0; --muted:#888; --faint:#444;
+  --accent:#c8f55a; --accent2:#5af5c8; --accent3:#f5a55a;
+  --done:#2a3a1a; --done-border:#4a6a2a;
+  --font-head:'DM Mono',monospace; --font-body:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;padding-bottom:80px}
+
+.header{padding:20px 20px 16px;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:1px solid var(--border)}
+.header-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.program-name{font-family:var(--font-head);font-size:11px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+.reset-btn{font-family:var(--font-head);font-size:10px;color:var(--muted);background:none;border:1px solid var(--faint);padding:4px 10px;border-radius:4px;cursor:pointer;letter-spacing:.05em}
+
+.day-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.day-tabs::-webkit-scrollbar{display:none}
+.day-tab{font-family:var(--font-head);font-size:11px;letter-spacing:.06em;padding:7px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.day-tab.active{background:var(--accent);color:#0f0f0f;border-color:var(--accent);font-weight:500}
+
+.week-selector{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border)}
+.week-selector::-webkit-scrollbar{display:none}
+.week-btn{font-family:var(--font-head);font-size:10px;letter-spacing:.06em;padding:5px 12px;border-radius:4px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.week-btn.active{border-color:var(--accent2);color:var(--accent2)}
+
+.content{padding:16px 16px 0}
+
+.phase-badge{font-family:var(--font-head);font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:16px}
+.phase-badge span{color:var(--accent2)}
+.day-title{font-family:var(--font-head);font-size:18px;font-weight:500;color:var(--text);margin-bottom:4px}
+.day-meta{font-size:13px;color:var(--muted)}
+.day-focus-tag{display:inline-block;font-size:11px;font-family:var(--font-head);padding:3px 10px;border-radius:20px;margin-top:8px;letter-spacing:.05em}
+.tag-upper{background:rgba(90,245,200,.1);color:var(--accent2);border:1px solid rgba(90,245,200,.2)}
+.tag-lower{background:rgba(200,245,90,.1);color:var(--accent);border:1px solid rgba(200,245,90,.2)}
+
+.warmup-block{background:rgba(245,165,90,.06);border:1px solid rgba(245,165,90,.15);border-radius:10px;padding:14px;margin-bottom:20px}
+.warmup-title{font-family:var(--font-head);font-size:10px;letter-spacing:.14em;color:var(--accent3);text-transform:uppercase;margin-bottom:10px}
+.warmup-item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(245,165,90,.08);font-size:13px}
+.warmup-item:last-child{border-bottom:none}
+.warmup-time{font-family:var(--font-head);font-size:12px;color:var(--accent3)}
+
+.block{margin-bottom:20px}
+.block-label{font-family:var(--font-head);font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.block-label span{color:var(--accent3)}
+.superset-label{font-size:11px;color:var(--accent3);font-family:var(--font-head);letter-spacing:.06em;margin-bottom:6px}
+
+.exercise{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;transition:all .2s}
+.exercise.checked{background:var(--done);border-color:var(--done-border)}
+.ex-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.ex-name{font-size:14px;font-weight:500;color:var(--text);line-height:1.3}
+.exercise.checked .ex-name{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--faint)}
+.ex-params{font-family:var(--font-head);font-size:12px;color:var(--accent);white-space:nowrap;flex-shrink:0}
+.exercise.checked .ex-params{color:var(--done-border)}
+.ex-note{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;font-style:italic}
+.ex-weight{font-size:12px;color:var(--accent3);margin-top:4px;font-family:var(--font-head)}
+.set-row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.set-dot{width:32px;height:32px;border-radius:6px;border:1.5px solid var(--faint);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:11px;color:var(--faint);transition:all .15s}
+.set-dot.done{background:var(--accent);border-color:var(--accent);color:#0f0f0f;font-weight:500}
+.set-dot:active{transform:scale(.92)}
+
+.progress-bar-wrap{height:3px;background:var(--border);border-radius:2px;margin:12px 0 0}
+.progress-bar{height:3px;background:var(--accent);border-radius:2px;transition:width .3s}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;z-index:20}
+.nav-btn{flex:1;padding:12px 8px 16px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-family:var(--font-head);font-size:10px;letter-spacing:.06em}
+.nav-btn.active{color:var(--accent)}
+.nav-icon{font-size:18px;line-height:1}
+
+/* Nutrition */
+.nutr-section-title{font-family:var(--font-head);font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.meal-entry{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.meal-entry-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.meal-name-input{background:none;border:none;color:var(--text);font-family:var(--font-body);font-size:14px;font-weight:500;flex:1;outline:none;width:100%}
+.meal-name-input::placeholder{color:var(--faint)}
+.delete-meal{background:none;border:none;color:var(--faint);cursor:pointer;font-size:18px;padding:0 0 0 8px;line-height:1;flex-shrink:0}
+.meal-macros{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.macro-input-wrap{display:flex;flex-direction:column;gap:3px}
+.macro-input-label{font-size:10px;color:var(--muted);font-family:var(--font-head)}
+.macro-input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font-head);font-size:13px;padding:6px 4px;width:100%;outline:none;text-align:center}
+.macro-input:focus{border-color:var(--accent)}
+.add-meal-btn{width:100%;padding:12px;background:none;border:1px dashed var(--faint);border-radius:10px;color:var(--muted);font-family:var(--font-head);font-size:11px;letter-spacing:.08em;cursor:pointer;margin-bottom:20px}
+.daily-summary{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:20px}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.summary-row:last-child{border-bottom:none}
+.summary-label{color:var(--muted);min-width:58px}
+.summary-bar-wrap{height:4px;background:var(--border);border-radius:2px;width:60px}
+.summary-bar{height:4px;border-radius:2px;max-width:100%}
+.food-ref{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.food-ref-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border);font-size:13px}
+.food-ref-row:last-child{border-bottom:none}
+.food-protein{color:var(--accent2)}
+.timing-card{background:rgba(90,245,200,.05);border:1px solid rgba(90,245,200,.15);border-radius:10px;padding:14px;margin-bottom:20px}
+.timing-title{font-family:var(--font-head);font-size:10px;letter-spacing:.12em;color:var(--accent2);text-transform:uppercase;margin-bottom:10px}
+.timing-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(90,245,200,.08);font-size:13px;gap:8px}
+.timing-row:last-child{border-bottom:none}
+.timing-time{font-family:var(--font-head);font-size:11px;color:var(--accent2);white-space:nowrap}
+</style>
+</head>
+<body>
+
+<div id="trainingHeader" class="header">
+  <div class="header-top">
+    <span class="program-name">KB Hypertrophy &middot; Meso 1</span>
+    <button class="reset-btn" onclick="resetDay()">Reset day</button>
+  </div>
+  <div class="day-tabs" id="dayTabs">
+    <button class="day-tab active" onclick="switchDay(0,this)">Mon</button>
+    <button class="day-tab" onclick="switchDay(1,this)">Tue</button>
+    <button class="day-tab" onclick="switchDay(2,this)">Wed</button>
+    <button class="day-tab" onclick="switchDay(3,this)">Thu</button>
+  </div>
+</div>
+
+<div id="nutritionHeader" class="header" style="display:none">
+  <div class="header-top">
+    <span class="program-name" style="color:var(--accent2)">Nutrition &middot; Daily Tracker</span>
+    <button class="reset-btn" onclick="resetMeals()">Reset day</button>
+  </div>
+</div>
+
+<div class="week-selector" id="weekSelector"></div>
+
+<div class="content" id="mainContent"></div>
+<div class="content" id="nutritionContent" style="display:none"></div>
+
+<div class="bottom-nav">
+  <button class="nav-btn active" id="navTraining" onclick="switchTab('training')">
+    <span class="nav-icon">&#127947;</span>Training
+  </button>
+  <button class="nav-btn" id="navNutrition" onclick="switchTab('nutrition')">
+    <span class="nav-icon">&#127830;</span>Nutrition
+  </button>
+</div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────
+var WEEKS = [
+  {label:"Wk 1",phase:"Accumulation",rpe:"RPE 7"},
+  {label:"Wk 2",phase:"Accumulation",rpe:"RPE 7-8"},
+  {label:"Wk 3",phase:"Intensification",rpe:"RPE 7-8"},
+  {label:"Wk 4",phase:"Intensification",rpe:"RPE 8"},
+  {label:"Wk 5",phase:"Peak Volume",rpe:"RPE 8"},
+  {label:"Wk 6",phase:"Peak Volume",rpe:"RPE 8"},
+  {label:"Wk 7",phase:"Peak Volume",rpe:"RPE 8"},
+  {label:"Wk 8",phase:"Deload",rpe:"RPE 5-6"}
+];
+
+var DAYS = [
+  {
+    name:"Upper A", sub:"Monday · Push / Pull", tag:"upper",
+    warmup:[
+      {name:"Shoulder circles + thoracic rotations",time:"2 min"},
+      {name:"KB arm bar",time:"30s/side"},
+      {name:"Dead hang or doorframe stretch",time:"30s"}
+    ],
+    blocks:[
+      {label:"A — Primary compound",rest:"90s rest",exercises:[
+        {name:"Double KB clean + press",weight:"2x50lb",params:"SxR",sets:3,reps:"5",note:"Tempo 3-1-1. Dead stop each clean. Strict press only."}
+      ]},
+      {label:"B — Superset",rest:"60s rest after both",superset:true,exercises:[
+        {name:"Gorilla row",weight:"2x50lb",params:"SxR/side",sets:3,reps:"8"},
+        {name:"KB floor press",weight:"2x50lb",params:"SxR",sets:3,reps:"10"}
+      ]},
+      {label:"C — Accessories",rest:"60s rest",exercises:[
+        {name:"Bottoms-up KB press",weight:"35lb",params:"SxR/side",sets:3,reps:"6"},
+        {name:"KB tricep extension",weight:"35lb",params:"SxR",sets:3,reps:"12"},
+        {name:"Renegade row",weight:"2x35lb",params:"SxR/side",sets:3,reps:"6"}
+      ]}
+    ]
+  },
+  {
+    name:"Lower A", sub:"Tuesday · Quad / Hinge", tag:"lower",
+    warmup:[
+      {name:"Hip 90/90 stretch",time:"60s"},
+      {name:"Goblet squat holds",time:"3x5s pause"},
+      {name:"Glute bridge activation",time:"15 reps"}
+    ],
+    blocks:[
+      {label:"A — Primary compound",rest:"90s rest",exercises:[
+        {name:"Double KB front rack squat",weight:"2x50lb",params:"SxR",sets:3,reps:"6",note:"Tempo 3-1-1. Full depth. Pause at bottom."}
+      ]},
+      {label:"B — Superset",rest:"60s rest after both",superset:true,exercises:[
+        {name:"Double KB RDL",weight:"2x50lb",params:"SxR",sets:3,reps:"8"},
+        {name:"Alternating reverse lunge",weight:"2x35lb",params:"SxR/side",sets:3,reps:"8"}
+      ]},
+      {label:"C — Accessories",rest:"60s rest",exercises:[
+        {name:"Single-leg KB RDL",weight:"35lb",params:"SxR/side",sets:3,reps:"8"},
+        {name:"KB goblet march in place",weight:"35lb",params:"SxT",sets:3,reps:"40s"},
+        {name:"Glute bridge KB pullover",weight:"",params:"SxR",sets:3,reps:"10"}
+      ]}
+    ]
+  },
+  {
+    name:"Upper B", sub:"Wednesday · Pull Focus", tag:"upper",
+    warmup:[
+      {name:"KB arm bar + hip flexor",time:"45s/side"},
+      {name:"Band pull-aparts",time:"2x15"}
+    ],
+    blocks:[
+      {label:"A — Primary compound",rest:"90s rest",exercises:[
+        {name:"Double KB clean",weight:"2x50lb",params:"SxR",sets:4,reps:"6",note:"Dead stop each rep. Power from hips, not arms."}
+      ]},
+      {label:"B — Superset",rest:"60s rest after both",superset:true,exercises:[
+        {name:"KB lawnmower row",weight:"50lb",params:"SxR/side",sets:3,reps:"10"},
+        {name:"KB single-arm strict press",weight:"35lb",params:"SxR/side",sets:3,reps:"8"}
+      ]},
+      {label:"C — Accessories",rest:"60s rest",exercises:[
+        {name:"KB windmill",weight:"35lb",params:"SxR/side",sets:3,reps:"5"},
+        {name:"KB curl two-handed",weight:"35lb",params:"SxR",sets:3,reps:"12"},
+        {name:"KB push-ups on handles",weight:"",params:"Sx max",sets:3,reps:"max"}
+      ]}
+    ]
+  },
+  {
+    name:"Lower B", sub:"Thursday · Hinge / Carry", tag:"lower",
+    warmup:[
+      {name:"Dead bug holds",time:"3x5s/side"},
+      {name:"Reverse Nordic negatives",time:"5 reps slow"},
+      {name:"Hip flexor stretch",time:"45s/side"}
+    ],
+    blocks:[
+      {label:"A — Primary compound",rest:"90s rest",exercises:[
+        {name:"Double KB sumo deadlift",weight:"2x50lb",params:"SxR",sets:4,reps:"6",note:"3s eccentric. Drive floor away on ascent."}
+      ]},
+      {label:"B — Superset",rest:"60s rest after both",superset:true,exercises:[
+        {name:"KB Bulgarian split squat",weight:"35lb",params:"SxR/side",sets:3,reps:"8"},
+        {name:"Double KB swing",weight:"2x35lb",params:"SxR",sets:3,reps:"10"}
+      ]},
+      {label:"C — Finisher",rest:"60s rest",exercises:[
+        {name:"KB suitcase carry",weight:"70lb",params:"SxT/side",sets:3,reps:"40s"},
+        {name:"Goblet pulse squat",weight:"35lb",params:"SxT",sets:2,reps:"20s"}
+      ]}
+    ]
+  }
+];
+
+// Week overrides: weekNum -> dayIdx -> {blocks: {blockIdx: {exIdx: {sets,reps,weight,name,note}}}, deload:bool}
+var OV = {
+  2:{
+    0:{blocks:{0:{0:{sets:3,reps:"6"}},1:{0:{reps:"9/side"},1:{reps:"11"}},2:{0:{sets:4,weight:"35lb"},1:{sets:4,weight:"50lb"},2:{sets:4,weight:"2x50lb"}}}},
+    1:{blocks:{0:{0:{sets:3,reps:"7"}},1:{0:{reps:"9"},1:{weight:"2x50lb"}},2:{0:{sets:4,weight:"50lb"},1:{sets:4,weight:"50lb"},2:{sets:4}}}},
+    2:{blocks:{0:{0:{sets:4,reps:"7"}},1:{0:{reps:"11/side"},1:{weight:"50lb"}},2:{0:{sets:4},1:{sets:4,weight:"50lb"},2:{sets:4}}}},
+    3:{blocks:{0:{0:{sets:4,reps:"7"}},1:{0:{weight:"50lb"},1:{weight:"2x50lb"}},2:{0:{sets:4},1:{sets:3,weight:"50lb"}}}}
+  },
+  3:{
+    0:{blocks:{0:{0:{sets:4,reps:"5",note:"Add 2s pause at press lockout."}},1:{0:{sets:4},1:{sets:4}},2:{0:{sets:4,weight:"35lb"},1:{sets:4,name:"KB skull crusher",weight:"50lb"},2:{sets:4,name:"See-saw press",weight:"2x50lb",reps:"8/side"}}}},
+    1:{blocks:{0:{0:{sets:4,reps:"6",note:"Add 2s pause at bottom each rep."}},1:{0:{sets:4},1:{sets:4,name:"Walking lunge",weight:"2x50lb",reps:"8/side"}},2:{0:{sets:4,weight:"50lb"},1:{sets:4,name:"Heels-elevated goblet squat",weight:"50lb",reps:"10"},2:{sets:4,name:"Hollow hold KB press",weight:"",reps:"10"}}}},
+    2:{blocks:{0:{0:{sets:4,reps:"6"}},1:{0:{sets:4},1:{sets:4,name:"KB clean + press",reps:"5/side"}},2:{0:{sets:4},1:{sets:4,weight:"50lb"},2:{sets:4,name:"Renegade row",weight:"2x50lb",reps:"8/side"}}}},
+    3:{blocks:{0:{0:{sets:4,reps:"6"}},1:{0:{sets:4,weight:"50lb"},1:{sets:4,name:"KB swing heavy",weight:"70lb",reps:"8"}},2:{0:{sets:4,reps:"50s/side"},1:{sets:4,name:"1.5-rep goblet squat",weight:"50lb",reps:"6"}}}}
+  },
+  4:{
+    0:{blocks:{0:{0:{sets:4,reps:"5"}},1:{0:{sets:4,reps:"9/side"},1:{sets:4,reps:"11"}},2:{0:{sets:4,weight:"35lb"},1:{sets:4,name:"KB skull crusher",weight:"50lb",reps:"10"},2:{sets:4,name:"See-saw press",weight:"2x50lb",reps:"10/side"}}}},
+    1:{blocks:{0:{0:{sets:4,reps:"7"}},1:{0:{sets:4,reps:"9"},1:{sets:4,name:"Walking lunge",weight:"2x50lb",reps:"9/side"}},2:{0:{sets:4,weight:"50lb"},1:{sets:4,name:"Heels-elevated goblet squat",weight:"50lb",reps:"11"},2:{sets:4,name:"Hollow hold KB press",weight:"",reps:"10"}}}},
+    2:{blocks:{0:{0:{sets:4,reps:"7"}},1:{0:{sets:4,reps:"11/side"},1:{sets:4,name:"KB clean + press",reps:"6/side"}},2:{0:{sets:4},1:{sets:4,weight:"50lb"},2:{sets:4,name:"Renegade row",weight:"2x50lb",reps:"8/side"}}}},
+    3:{blocks:{0:{0:{sets:4,reps:"7"}},1:{0:{sets:4,weight:"50lb"},1:{sets:4,name:"KB swing heavy",weight:"70lb",reps:"9"}},2:{0:{sets:4,reps:"50s/side"},1:{sets:4,name:"1.5-rep goblet squat",weight:"50lb",reps:"7"}}}}
+  },
+  5:{
+    0:{blocks:{0:{0:{sets:5,reps:"4",name:"DKB chain: clean+press+squat",note:"1 clean + 1 press + 1 squat = 1 rep."}},1:{0:{sets:4,reps:"10/side"},1:{sets:4,reps:"12"}},2:{0:{sets:4,name:"KB skull crusher",weight:"50lb",reps:"12"},1:{sets:4,name:"KB push-ups on handles",weight:"",reps:"max"},2:{sets:4,name:"See-saw press",weight:"2x50lb",reps:"10/side"}}}},
+    1:{blocks:{0:{0:{sets:5,reps:"6",note:"3s eccentric + 2s pause + explode up."}},1:{0:{sets:4,reps:"10"},1:{sets:4,name:"Walking lunge",weight:"2x50lb",reps:"10/side"}},2:{0:{sets:4,name:"1.5-rep goblet squat",weight:"50lb",reps:"8"},1:{sets:4,name:"Heels-elevated goblet squat",weight:"50lb",reps:"12"},2:{sets:4,name:"KB suitcase carry",weight:"70lb",reps:"60s/side"}}}},
+    2:{blocks:{0:{0:{sets:5,reps:"4",name:"DKB chain: clean+push press+squat",note:"Legs drive push press. Pull to rack before squat."}},1:{0:{sets:4,reps:"12/side"},1:{sets:4,name:"KB clean + strict press",reps:"6/side"}},2:{0:{sets:4},1:{sets:4,name:"KB racked Z press",weight:"2x35lb",reps:"8"},2:{sets:4,weight:"50lb",reps:"15"}}}},
+    3:{blocks:{0:{0:{sets:5,reps:"6"}},1:{0:{sets:4,weight:"50lb",reps:"10/side"},1:{sets:4,name:"KB heavy swing",weight:"70lb",reps:"10"}},2:{0:{sets:4,name:"KB snatch",weight:"35lb",reps:"6/side"},1:{sets:4,name:"KB goblet march",weight:"50lb",reps:"50s"},2:{sets:4,name:"Reverse Nordic",weight:"",reps:"10"}}}}
+  },
+  6:{
+    0:{blocks:{0:{0:{sets:5,reps:"4"}},1:{0:{sets:4,reps:"11/side"},1:{sets:4,reps:"13"}},2:{0:{sets:4,name:"KB skull crusher",weight:"50lb",reps:"13"},1:{sets:4,name:"KB push-ups on handles",weight:"",reps:"max"},2:{sets:4,name:"See-saw press",weight:"2x50lb",reps:"11/side"}}}},
+    1:{blocks:{0:{0:{sets:5,reps:"7"}}  ,1:{0:{sets:4,reps:"11"},1:{sets:4,name:"Walking lunge",weight:"2x50lb",reps:"11/side"}},2:{0:{sets:4,name:"1.5-rep goblet squat",weight:"50lb",reps:"9"},1:{sets:4,name:"Heels-elevated goblet squat",weight:"50lb",reps:"13"},2:{sets:4,name:"KB suitcase carry",weight:"70lb",reps:"60s/side"}}}},
+    2:{blocks:{0:{0:{sets:5,reps:"5"}}  ,1:{0:{sets:4,reps:"12/side"},1:{sets:4,name:"KB clean + strict press",reps:"6/side"}},2:{0:{sets:4},1:{sets:4,name:"KB racked Z press",weight:"2x35lb",reps:"9"},2:{sets:4,weight:"50lb",reps:"15"}}}},
+    3:{blocks:{0:{0:{sets:5,reps:"7"}}  ,1:{0:{sets:4,weight:"50lb",reps:"10/side"},1:{sets:4,name:"KB heavy swing",weight:"70lb",reps:"10"}},2:{0:{sets:4,name:"KB snatch",weight:"35lb",reps:"6/side"},1:{sets:4,name:"KB goblet march",weight:"50lb",reps:"55s"},2:{sets:4,name:"Reverse Nordic",weight:"",reps:"11"}}}}
+  },
+  7:{
+    0:{blocks:{0:{0:{sets:5,reps:"5"}},1:{0:{sets:4,reps:"12/side"},1:{sets:4,reps:"14"}},2:{0:{sets:4,name:"KB skull crusher",weight:"50lb",reps:"14"},1:{sets:4,name:"KB push-ups on handles",weight:"",reps:"max"},2:{sets:4,name:"See-saw press",weight:"2x50lb",reps:"11/side"}}}},
+    1:{blocks:{0:{0:{sets:5,reps:"7"}},1:{0:{sets:4,reps:"12"},1:{sets:4,name:"Walking lunge",weight:"2x50lb",reps:"11/side"}},2:{0:{sets:4,name:"1.5-rep goblet squat",weight:"50lb",reps:"10"},1:{sets:4,name:"Heels-elevated goblet squat",weight:"50lb",reps:"14"},2:{sets:4,name:"KB suitcase carry",weight:"70lb",reps:"65s/side"}}}},
+    2:{blocks:{0:{0:{sets:5,reps:"5"}},1:{0:{sets:4,reps:"13/side"},1:{sets:4,name:"KB clean + strict press",reps:"7/side"}},2:{0:{sets:4},1:{sets:4,name:"KB racked Z press",weight:"2x35lb",reps:"10"},2:{sets:4,weight:"50lb",reps:"16"}}}},
+    3:{blocks:{0:{0:{sets:5,reps:"7"}},1:{0:{sets:4,weight:"50lb",reps:"11/side"},1:{sets:4,name:"KB heavy swing",weight:"70lb",reps:"11"}},2:{0:{sets:4,name:"KB snatch",weight:"35lb",reps:"6/side"},1:{sets:4,name:"KB goblet march",weight:"50lb",reps:"60s"},2:{sets:4,name:"Reverse Nordic",weight:"",reps:"12"}}}}
+  },
+  8:{
+    0:{deload:true,blocks:{0:{0:{sets:2,reps:"4"}},1:{0:{sets:2,reps:"6/side"},1:{sets:2,reps:"8"}},2:{0:{sets:2,weight:"35lb",reps:"6/side"},1:{sets:2,weight:"35lb",reps:"8"}}}},
+    1:{deload:true,blocks:{0:{0:{sets:2,reps:"4"}},1:{0:{sets:2,reps:"6"},1:{sets:2,reps:"6/side"}},2:{0:{sets:2,reps:"6/side"},1:{sets:2,reps:"30s"}}}},
+    2:{deload:true,blocks:{0:{0:{sets:2,reps:"4"}},1:{0:{sets:2,reps:"8/side"},1:{sets:2,reps:"6/side"}},2:{0:{sets:2,reps:"4/side"},1:{sets:2,reps:"8"}}}},
+    3:{deload:true,blocks:{0:{0:{sets:2,reps:"4"}},1:{0:{sets:2,reps:"6/side"},1:{sets:2,reps:"8"}},2:{0:{sets:2,reps:"30s/side"}}}}
+  }
+};
+
+// ── State ─────────────────────────────────────────────────────
+var currentWeek = 1;
+var currentDay = 0;
+var setsDone = {};
+
+function setKey(w,d,b,e,s){ return w+"_"+d+"_"+b+"_"+e+"_"+s; }
+function isDone(w,d,b,e,s){ return !!setsDone[setKey(w,d,b,e,s)]; }
+function toggleSet(w,d,b,e,s){ var k=setKey(w,d,b,e,s); setsDone[k]=!setsDone[k]; render(); }
+
+function resetDay(){
+  var pre = currentWeek+"_"+currentDay+"_";
+  Object.keys(setsDone).forEach(function(k){ if(k.indexOf(pre)===0) delete setsDone[k]; });
+  render();
+}
+
+function switchDay(d,btn){
+  currentDay=d;
+  document.querySelectorAll('.day-tab').forEach(function(t,i){ t.classList.toggle('active',i===d); });
+  render();
+}
+
+function switchWeek(w){
+  currentWeek=w;
+  document.querySelectorAll('.week-btn').forEach(function(b,i){ b.classList.toggle('active',i===(w-1)); });
+  render();
+}
+
+// ── Helpers ───────────────────────────────────────────────────
+function getEx(di,bi,ei){
+  var ex = JSON.parse(JSON.stringify(DAYS[di].blocks[bi].exercises[ei]));
+  var dow = OV[currentWeek];
+  if(dow && dow[di] && dow[di].blocks && dow[di].blocks[bi] && dow[di].blocks[bi][ei]){
+    var o = dow[di].blocks[bi][ei];
+    if(o.name  !== undefined) ex.name   = o.name;
+    if(o.weight!== undefined) ex.weight = o.weight;
+    if(o.note  !== undefined) ex.note   = o.note;
+    if(o.sets  !== undefined) ex.sets   = o.sets;
+    if(o.reps  !== undefined) ex.reps   = o.reps;
+  }
+  return ex;
+}
+
+function isDeload(){ var d=OV[currentWeek]; return d && d[currentDay] && d[currentDay].deload; }
+
+// ── Training render ───────────────────────────────────────────
+function render(){
+  var day=DAYS[currentDay], wi=WEEKS[currentWeek-1], deload=isDeload();
+  var h='';
+  h+='<div class="phase-badge">Phase: <span>'+wi.phase+'</span> &nbsp;&middot;&nbsp; '+wi.rpe+(deload?' &nbsp;&middot;&nbsp; <span style="color:var(--accent3)">DELOAD</span>':'')+'</div>';
+  h+='<div style="margin-bottom:16px"><div class="day-title">'+day.name+'</div><div class="day-meta">'+day.sub+'</div>';
+  h+='<span class="day-focus-tag tag-'+day.tag+'">'+(day.tag==='upper'?'Upper body':'Lower body')+'</span></div>';
+
+  h+='<div class="warmup-block"><div class="warmup-title">Warm-up &middot; 5 min</div>';
+  day.warmup.forEach(function(w){ h+='<div class="warmup-item"><span>'+w.name+'</span><span class="warmup-time">'+w.time+'</span></div>'; });
+  h+='</div>';
+
+  day.blocks.forEach(function(block,bi){
+    if(deload && bi===2 && currentDay===3) return;
+    h+='<div class="block"><div class="block-label">'+block.label+' <span>&middot; '+block.rest+'</span></div>';
+    if(block.superset) h+='<div class="superset-label">Superset &mdash; complete both before resting</div>';
+    block.exercises.forEach(function(ex,ei){
+      var e=getEx(currentDay,bi,ei);
+      var allDone=true;
+      for(var s=0;s<e.sets;s++){ if(!isDone(currentWeek,currentDay,bi,ei,s)){allDone=false;break;} }
+      h+='<div class="exercise'+(allDone?' checked':'')+'"><div class="ex-top"><span class="ex-name">'+e.name+'</span><span class="ex-params">'+e.sets+'&times;'+e.reps+'</span></div>';
+      if(e.weight) h+='<div class="ex-weight">'+e.weight+'</div>';
+      if(e.note)   h+='<div class="ex-note">'+e.note+'</div>';
+      h+='<div class="set-row">';
+      for(var s=0;s<e.sets;s++){
+        var done=isDone(currentWeek,currentDay,bi,ei,s);
+        h+='<button class="set-dot'+(done?' done':'')+'" onclick="toggleSet('+currentWeek+','+currentDay+','+bi+','+ei+','+s+')">'+(done?'&#10003;':s+1)+'</button>';
+      }
+      h+='</div></div>';
+    });
+    h+='</div>';
+  });
+
+  // progress
+  var total=0,done=0;
+  day.blocks.forEach(function(block,bi){
+    if(deload && bi===2 && currentDay===3) return;
+    block.exercises.forEach(function(ex,ei){
+      var e=getEx(currentDay,bi,ei);
+      total+=e.sets;
+      for(var s=0;s<e.sets;s++){ if(isDone(currentWeek,currentDay,bi,ei,s)) done++; }
+    });
+  });
+  var pct=total>0?Math.round(done/total*100):0;
+  h+='<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:8px">';
+  h+='<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-family:var(--font-head);font-size:11px;color:var(--muted)"><span>Session progress</span><span style="color:var(--accent)">'+done+' / '+total+' sets</span></div>';
+  h+='<div class="progress-bar-wrap"><div class="progress-bar" style="width:'+pct+'%"></div></div></div>';
+
+  document.getElementById('mainContent').innerHTML=h;
+}
+
+function buildWeekSelector(){
+  document.getElementById('weekSelector').innerHTML=WEEKS.map(function(w,i){
+    return '<button class="week-btn'+(i===0?' active':'')+'" onclick="switchWeek('+(i+1)+')">'+w.label+'</button>';
+  }).join('');
+}
+
+// ── Tab switching ─────────────────────────────────────────────
+function switchTab(tab){
+  var isT=tab==='training';
+  document.getElementById('trainingHeader').style.display=isT?'':'none';
+  document.getElementById('nutritionHeader').style.display=isT?'none':'';
+  document.getElementById('weekSelector').style.display=isT?'':'none';
+  document.getElementById('mainContent').style.display=isT?'':'none';
+  document.getElementById('nutritionContent').style.display=isT?'none':'';
+  document.getElementById('navTraining').classList.toggle('active',isT);
+  document.getElementById('navNutrition').classList.toggle('active',!isT);
+  if(!isT) renderNutrition();
+}
+
+// ── Nutrition ─────────────────────────────────────────────────
+var TARGETS={cal:2950,protein:200,carbs:350,fat:80};
+
+var FOOD_REF=[
+  {name:"Promix whey (1 scoop)",cal:120,protein:25,carbs:3,fat:2},
+  {name:"Eggs x3",cal:210,protein:18,carbs:1,fat:15},
+  {name:"Ground beef 85% (6oz)",cal:340,protein:36,carbs:0,fat:21},
+  {name:"Chicken breast (6oz)",cal:280,protein:52,carbs:0,fat:6},
+  {name:"Greek yogurt (1 cup)",cal:130,protein:17,carbs:9,fat:3},
+  {name:"Oats (1 cup dry)",cal:300,protein:10,carbs:54,fat:5},
+  {name:"White rice (1 cup cooked)",cal:200,protein:4,carbs:44,fat:0},
+  {name:"Whole milk (1 cup)",cal:150,protein:8,carbs:12,fat:8},
+  {name:"Banana (large)",cal:120,protein:1,carbs:31,fat:0},
+  {name:"Potato (medium baked)",cal:160,protein:4,carbs:37,fat:0},
+  {name:"Olive oil (1 tbsp)",cal:120,protein:0,carbs:0,fat:14},
+  {name:"Cottage cheese (1 cup)",cal:200,protein:24,carbs:8,fat:9}
+];
+
+var TIMING=[
+  {time:"5:15 AM",label:"Pre-workout",desc:"Half scoop Kaged + banana or rice cake"},
+  {time:"6:30 AM",label:"Post-workout",desc:"Promix shake + oats + fruit (40g pro)"},
+  {time:"9:00 AM",label:"Breakfast",desc:"Eggs + potatoes + whole milk"},
+  {time:"12:30 PM",label:"Lunch",desc:"Rice + ground beef or chicken + veg"},
+  {time:"3:30 PM",label:"Snack",desc:"Greek yogurt + banana"},
+  {time:"7:00 PM",label:"Dinner",desc:"Protein + starch + fat source"},
+  {time:"9:00 PM",label:"Optional",desc:"Cottage cheese if under protein target"}
+];
+
+var meals=[
+  {name:"Pre-workout",cal:"",protein:"",carbs:"",fat:""},
+  {name:"Post-workout shake",cal:"",protein:"",carbs:"",fat:""},
+  {name:"Breakfast",cal:"",protein:"",carbs:"",fat:""},
+  {name:"Lunch",cal:"",protein:"",carbs:"",fat:""},
+  {name:"Dinner",cal:"",protein:"",carbs:"",fat:""}
+];
+
+function getTotals(){
+  return meals.reduce(function(t,m){
+    return {cal:t.cal+(parseFloat(m.cal)||0),protein:t.protein+(parseFloat(m.protein)||0),carbs:t.carbs+(parseFloat(m.carbs)||0),fat:t.fat+(parseFloat(m.fat)||0)};
+  },{cal:0,protein:0,carbs:0,fat:0});
+}
+
+function mcolor(p){ return p>=90?'var(--accent)':p>=60?'var(--accent3)':'var(--faint)'; }
+
+function addMeal(){ meals.push({name:"",cal:"",protein:"",carbs:"",fat:""}); renderNutrition(); setTimeout(function(){ var i=document.querySelectorAll('.meal-name-input'); if(i.length) i[i.length-1].focus(); },50); }
+function deleteMeal(i){ meals.splice(i,1); renderNutrition(); }
+function updateMeal(i,f,v){ meals[i][f]=v; renderNutritionSummary(); }
+function resetMeals(){ meals=[{name:"Pre-workout",cal:"",protein:"",carbs:"",fat:""},{name:"Post-workout shake",cal:"",protein:"",carbs:"",fat:""},{name:"Breakfast",cal:"",protein:"",carbs:"",fat:""},{name:"Lunch",cal:"",protein:"",carbs:"",fat:""},{name:"Dinner",cal:"",protein:"",carbs:"",fat:""}]; renderNutrition(); }
+
+function renderNutritionSummary(){
+  var el=document.getElementById('nutritionSummary'); if(!el) return;
+  var t=getTotals();
+  var fields=[{label:'Calories',key:'cal',unit:'kcal'},{label:'Protein',key:'protein',unit:'g'},{label:'Carbs',key:'carbs',unit:'g'},{label:'Fat',key:'fat',unit:'g'}];
+  el.innerHTML=fields.map(function(f){
+    var v=Math.round(t[f.key]),tgt=TARGETS[f.key],rem=tgt-v;
+    var p=Math.min(100,Math.round(v/tgt*100)),col=mcolor(p);
+    var remStr=rem>0?'-'+rem:'+'+Math.abs(rem), remCol=rem>0?'var(--muted)':'var(--accent)';
+    return '<div class="summary-row"><span class="summary-label">'+f.label+'</span><div style="display:flex;align-items:center;gap:8px"><div class="summary-bar-wrap"><div class="summary-bar" style="width:'+p+'%;background:'+col+'"></div></div><span style="font-family:var(--font-head);font-size:13px;color:'+col+'">'+v+'<span style="color:var(--faint);font-size:11px">/'+tgt+f.unit+'</span></span><span style="font-family:var(--font-head);font-size:11px;color:'+remCol+';min-width:38px;text-align:right">'+remStr+'</span></div></div>';
+  }).join('');
+}
+
+function renderNutrition(){
+  var nc=document.getElementById('nutritionContent');
+  var h='<div id="nutritionSummary" class="daily-summary"></div>';
+  h+='<div style="margin-bottom:0"><div class="nutr-section-title">Meals today</div>';
+  meals.forEach(function(m,i){
+    h+='<div class="meal-entry">';
+    h+='<div class="meal-entry-top"><input class="meal-name-input" placeholder="Meal name..." value="'+m.name.replace(/"/g,'&quot;')+'" oninput="meals['+i+'].name=this.value"/><button class="delete-meal" onclick="deleteMeal('+i+')">&#215;</button></div>';
+    h+='<div class="meal-macros">';
+    h+='<div class="macro-input-wrap"><div class="macro-input-label">Cal</div><input class="macro-input" type="number" inputmode="numeric" placeholder="0" value="'+m.cal+'" oninput="updateMeal('+i+',\'cal\',this.value)"/></div>';
+    h+='<div class="macro-input-wrap"><div class="macro-input-label" style="color:var(--accent2)">Pro g</div><input class="macro-input" type="number" inputmode="numeric" placeholder="0" value="'+m.protein+'" oninput="updateMeal('+i+',\'protein\',this.value)"/></div>';
+    h+='<div class="macro-input-wrap"><div class="macro-input-label" style="color:var(--accent3)">Carb g</div><input class="macro-input" type="number" inputmode="numeric" placeholder="0" value="'+m.carbs+'" oninput="updateMeal('+i+',\'carbs\',this.value)"/></div>';
+    h+='<div class="macro-input-wrap"><div class="macro-input-label">Fat g</div><input class="macro-input" type="number" inputmode="numeric" placeholder="0" value="'+m.fat+'" oninput="updateMeal('+i+',\'fat\',this.value)"/></div>';
+    h+='</div></div>';
+  });
+  h+='</div><button class="add-meal-btn" onclick="addMeal()">+ Add meal</button>';
+  h+='<div class="nutr-section-title">Meal timing guide</div><div class="timing-card"><div class="timing-title">Training day schedule</div>';
+  TIMING.forEach(function(t){ h+='<div class="timing-row"><span>'+t.label+' &mdash; '+t.desc+'</span><span class="timing-time">'+t.time+'</span></div>'; });
+  h+='</div><div class="nutr-section-title">Protein reference</div><div class="food-ref">';
+  FOOD_REF.forEach(function(f){ h+='<div class="food-ref-row"><span>'+f.name+'</span><span style="font-family:var(--font-head);font-size:11px;text-align:right;line-height:1.8"><span class="food-protein">'+f.protein+'g pro</span> &middot; '+f.cal+'kcal</span></div>'; });
+  h+='</div>';
+  nc.innerHTML=h;
+  renderNutritionSummary();
+}
+
+// ── Init ──────────────────────────────────────────────────────
+buildWeekSelector();
+render();
+</script>
+</body>
+</html>
