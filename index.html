@@ -6,33 +6,29 @@
 <title>Ted's KB Program</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#0f0f0f; --bg2:#181818; --bg3:#222; --border:#2e2e2e;
-  --text:#f0f0f0; --muted:#888; --faint:#444;
-  --accent:#c8f55a; --accent2:#5af5c8; --accent3:#f5a55a;
-  --done:#2a3a1a; --done-border:#4a6a2a;
-  --font-head:'DM Mono',monospace; --font-body:'DM Sans',sans-serif;
+:root{
+  --bg:#0f0f0f;--bg2:#181818;--bg3:#222;--border:#2e2e2e;
+  --text:#f0f0f0;--muted:#888;--faint:#444;
+  --accent:#c8f55a;--accent2:#5af5c8;--accent3:#f5a55a;--accent4:#f55a8a;
+  --done:#2a3a1a;--done-border:#4a6a2a;
+  --font-head:'DM Mono',monospace;--font-body:'DM Sans',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;padding-bottom:80px}
-
 .header{padding:20px 20px 16px;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:1px solid var(--border)}
 .header-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
 .program-name{font-family:var(--font-head);font-size:11px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
 .reset-btn{font-family:var(--font-head);font-size:10px;color:var(--muted);background:none;border:1px solid var(--faint);padding:4px 10px;border-radius:4px;cursor:pointer;letter-spacing:.05em}
-
 .day-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
 .day-tabs::-webkit-scrollbar{display:none}
 .day-tab{font-family:var(--font-head);font-size:11px;letter-spacing:.06em;padding:7px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0}
 .day-tab.active{background:var(--accent);color:#0f0f0f;border-color:var(--accent);font-weight:500}
-
+.day-tab.cond-active{background:var(--accent4);color:#0f0f0f;border-color:var(--accent4);font-weight:500}
 .week-selector{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border)}
 .week-selector::-webkit-scrollbar{display:none}
 .week-btn{font-family:var(--font-head);font-size:10px;letter-spacing:.06em;padding:5px 12px;border-radius:4px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0}
 .week-btn.active{border-color:var(--accent2);color:var(--accent2)}
-
 .content{padding:16px 16px 0}
-
 .phase-badge{font-family:var(--font-head);font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:16px}
 .phase-badge span{color:var(--accent2)}
 .day-title{font-family:var(--font-head);font-size:18px;font-weight:500;color:var(--text);margin-bottom:4px}
@@ -40,18 +36,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .day-focus-tag{display:inline-block;font-size:11px;font-family:var(--font-head);padding:3px 10px;border-radius:20px;margin-top:8px;letter-spacing:.05em}
 .tag-upper{background:rgba(90,245,200,.1);color:var(--accent2);border:1px solid rgba(90,245,200,.2)}
 .tag-lower{background:rgba(200,245,90,.1);color:var(--accent);border:1px solid rgba(200,245,90,.2)}
-
+.tag-cond{background:rgba(245,90,138,.1);color:var(--accent4);border:1px solid rgba(245,90,138,.2)}
 .warmup-block{background:rgba(245,165,90,.06);border:1px solid rgba(245,165,90,.15);border-radius:10px;padding:14px;margin-bottom:20px}
 .warmup-title{font-family:var(--font-head);font-size:10px;letter-spacing:.14em;color:var(--accent3);text-transform:uppercase;margin-bottom:10px}
 .warmup-item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(245,165,90,.08);font-size:13px}
 .warmup-item:last-child{border-bottom:none}
 .warmup-time{font-family:var(--font-head);font-size:12px;color:var(--accent3)}
-
 .block{margin-bottom:20px}
 .block-label{font-family:var(--font-head);font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
 .block-label span{color:var(--accent3)}
 .superset-label{font-size:11px;color:var(--accent3);font-family:var(--font-head);letter-spacing:.06em;margin-bottom:6px}
-
 .exercise{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;transition:all .2s}
 .exercise.checked{background:var(--done);border-color:var(--done-border)}
 .ex-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
@@ -65,17 +59,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .set-dot{width:32px;height:32px;border-radius:6px;border:1.5px solid var(--faint);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:11px;color:var(--faint);transition:all .15s}
 .set-dot.done{background:var(--accent);border-color:var(--accent);color:#0f0f0f;font-weight:500}
 .set-dot:active{transform:scale(.92)}
-
 .progress-bar-wrap{height:3px;background:var(--border);border-radius:2px;margin:12px 0 0}
 .progress-bar{height:3px;background:var(--accent);border-radius:2px;transition:width .3s}
-
-/* Bottom nav */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);display:flex;z-index:20}
 .nav-btn{flex:1;padding:12px 8px 16px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-family:var(--font-head);font-size:10px;letter-spacing:.06em}
 .nav-btn.active{color:var(--accent)}
 .nav-icon{font-size:18px;line-height:1}
-
-/* Nutrition */
 .nutr-section-title{font-family:var(--font-head);font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
 .meal-entry{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px}
 .meal-entry-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
@@ -109,17 +98,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
 <div id="trainingHeader" class="header">
   <div class="header-top">
-    <span class="program-name">KB Hypertrophy &middot; Meso 1</span>
+    <span class="program-name">KB Hypertrophy &middot; Meso 2</span>
     <button class="reset-btn" onclick="resetDay()">Reset day</button>
   </div>
-  <div class="day-tabs" id="dayTabs">
-    <button class="day-tab active" onclick="switchDay(0,this)">Mon</button>
-    <button class="day-tab" onclick="switchDay(1,this)">Tue</button>
-    <button class="day-tab" onclick="switchDay(2,this)">Wed</button>
-    <button class="day-tab" onclick="switchDay(3,this)">Thu</button>
-  </div>
+  <div class="day-tabs" id="dayTabs"></div>
 </div>
-
 <div id="nutritionHeader" class="header" style="display:none">
   <div class="header-top">
     <span class="program-name" style="color:var(--accent2)">Nutrition &middot; Daily Tracker</span>
@@ -128,7 +111,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 </div>
 
 <div class="week-selector" id="weekSelector"></div>
-
 <div class="content" id="mainContent"></div>
 <div class="content" id="nutritionContent" style="display:none"></div>
 
@@ -142,220 +124,249 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 </div>
 
 <script>
-// ── Data ──────────────────────────────────────────────────────
-var WEEKS = [
-  {label:"Wk 1",phase:"Accumulation",rpe:"RPE 7"},
-  {label:"Wk 2",phase:"Accumulation",rpe:"RPE 7-8"},
-  {label:"Wk 3",phase:"Intensification",rpe:"RPE 7-8"},
-  {label:"Wk 4",phase:"Intensification",rpe:"RPE 8"},
-  {label:"Wk 5",phase:"Peak Volume",rpe:"RPE 8"},
-  {label:"Wk 6",phase:"Peak Volume",rpe:"RPE 8"},
-  {label:"Wk 7",phase:"Peak Volume",rpe:"RPE 8"},
+// Phases: Wk1-2 = High Volume Entry (RPE8), Wk3-5 = Progressive Overload (RPE8-9), Wk6-7 = Peak Intensity (RPE9), Wk8 = Deload
+var WEEKS=[
+  {label:"Wk 1",phase:"High Volume Entry",rpe:"RPE 8"},
+  {label:"Wk 2",phase:"High Volume Entry",rpe:"RPE 8"},
+  {label:"Wk 3",phase:"Progressive Overload",rpe:"RPE 8-9"},
+  {label:"Wk 4",phase:"Progressive Overload",rpe:"RPE 8-9"},
+  {label:"Wk 5",phase:"Progressive Overload",rpe:"RPE 9"},
+  {label:"Wk 6",phase:"Peak Intensity",rpe:"RPE 9"},
+  {label:"Wk 7",phase:"Peak Intensity",rpe:"RPE 9"},
   {label:"Wk 8",phase:"Deload",rpe:"RPE 5-6"}
 ];
 
-var DAYS = [
+// Days: 0=Mon(UpperA), 1=Tue(LowerA), 2=Thu(UpperB), 3=Fri(LowerB), 4=Weekend(Conditioning)
+var DAYS=[
   {
-    name:"Upper A", sub:"Monday · Push / Pull", tag:"upper",
+    name:"Upper A",sub:"Monday &middot; Push / Pull",tag:"upper",
     warmup:[
       {name:"Shoulder circles + thoracic rotations",time:"2 min"},
-      {name:"KB arm bar",time:"30s/side"},
-      {name:"Dead hang or doorframe stretch",time:"30s"}
-    ],
-    blocks:[
-      {label:"A — Primary compound",rest:"90s rest",exercises:[
-        {name:"Double KB clean + press",weight:"2x50lb",params:"SxR",sets:3,reps:"5",note:"Tempo 3-1-1. Dead stop each clean. Strict press only."}
-      ]},
-      {label:"B — Superset",rest:"60s rest after both",superset:true,exercises:[
-        {name:"Gorilla row",weight:"2x50lb",params:"SxR/side",sets:3,reps:"8"},
-        {name:"KB floor press",weight:"2x50lb",params:"SxR",sets:3,reps:"10"}
-      ]},
-      {label:"C — Accessories",rest:"60s rest",exercises:[
-        {name:"Bottoms-up KB press",weight:"35lb",params:"SxR/side",sets:3,reps:"6"},
-        {name:"KB tricep extension",weight:"35lb",params:"SxR",sets:3,reps:"12"},
-        {name:"Renegade row",weight:"2x35lb",params:"SxR/side",sets:3,reps:"6"}
-      ]}
-    ]
-  },
-  {
-    name:"Lower A", sub:"Tuesday · Quad / Hinge", tag:"lower",
-    warmup:[
-      {name:"Hip 90/90 stretch",time:"60s"},
-      {name:"Goblet squat holds",time:"3x5s pause"},
-      {name:"Glute bridge activation",time:"15 reps"}
-    ],
-    blocks:[
-      {label:"A — Primary compound",rest:"90s rest",exercises:[
-        {name:"Double KB front rack squat",weight:"2x50lb",params:"SxR",sets:3,reps:"6",note:"Tempo 3-1-1. Full depth. Pause at bottom."}
-      ]},
-      {label:"B — Superset",rest:"60s rest after both",superset:true,exercises:[
-        {name:"Double KB RDL",weight:"2x50lb",params:"SxR",sets:3,reps:"8"},
-        {name:"Alternating reverse lunge",weight:"2x35lb",params:"SxR/side",sets:3,reps:"8"}
-      ]},
-      {label:"C — Accessories",rest:"60s rest",exercises:[
-        {name:"Single-leg KB RDL",weight:"35lb",params:"SxR/side",sets:3,reps:"8"},
-        {name:"KB goblet march in place",weight:"35lb",params:"SxT",sets:3,reps:"40s"},
-        {name:"Glute bridge KB pullover",weight:"",params:"SxR",sets:3,reps:"10"}
-      ]}
-    ]
-  },
-  {
-    name:"Upper B", sub:"Wednesday · Pull Focus", tag:"upper",
-    warmup:[
-      {name:"KB arm bar + hip flexor",time:"45s/side"},
+      {name:"KB arm bar",time:"45s/side"},
       {name:"Band pull-aparts",time:"2x15"}
     ],
     blocks:[
-      {label:"A — Primary compound",rest:"90s rest",exercises:[
-        {name:"Double KB clean",weight:"2x50lb",params:"SxR",sets:4,reps:"6",note:"Dead stop each rep. Power from hips, not arms."}
+      {label:"A &mdash; Primary compound",rest:"90s rest",exercises:[
+        {name:"DKB chain: clean + press + front squat",weight:"2x50lb",params:"SxR",sets:5,reps:"4",note:"1 clean + 1 press + 1 squat = 1 rep. 3-1-1 tempo on squat. 2s pause at press lockout."}
       ]},
-      {label:"B — Superset",rest:"60s rest after both",superset:true,exercises:[
-        {name:"KB lawnmower row",weight:"50lb",params:"SxR/side",sets:3,reps:"10"},
-        {name:"KB single-arm strict press",weight:"35lb",params:"SxR/side",sets:3,reps:"8"}
+      {label:"B &mdash; Superset",rest:"60s rest after both",superset:true,exercises:[
+        {name:"Gorilla row",weight:"2x50lb",params:"SxR/side",sets:4,reps:"10"},
+        {name:"KB floor press",weight:"2x50lb",params:"SxR",sets:4,reps:"12"}
       ]},
-      {label:"C — Accessories",rest:"60s rest",exercises:[
-        {name:"KB windmill",weight:"35lb",params:"SxR/side",sets:3,reps:"5"},
-        {name:"KB curl two-handed",weight:"35lb",params:"SxR",sets:3,reps:"12"},
-        {name:"KB push-ups on handles",weight:"",params:"Sx max",sets:3,reps:"max"}
+      {label:"C &mdash; Accessories",rest:"60s rest",exercises:[
+        {name:"Bottoms-up KB press",weight:"35lb",params:"SxR/side",sets:4,reps:"6"},
+        {name:"KB skull crusher",weight:"50lb",params:"SxR",sets:4,reps:"12"},
+        {name:"See-saw press",weight:"2x35lb",params:"SxR/side",sets:4,reps:"10"}
       ]}
     ]
   },
   {
-    name:"Lower B", sub:"Thursday · Hinge / Carry", tag:"lower",
+    name:"Lower A",sub:"Tuesday &middot; Quad / Hinge",tag:"lower",
     warmup:[
-      {name:"Dead bug holds",time:"3x5s/side"},
-      {name:"Reverse Nordic negatives",time:"5 reps slow"},
-      {name:"Hip flexor stretch",time:"45s/side"}
+      {name:"Hip 90/90 stretch",time:"60s/side"},
+      {name:"Goblet squat tempo holds",time:"5x5s pause"},
+      {name:"Glute bridge activation",time:"20 reps"}
     ],
     blocks:[
-      {label:"A — Primary compound",rest:"90s rest",exercises:[
-        {name:"Double KB sumo deadlift",weight:"2x50lb",params:"SxR",sets:4,reps:"6",note:"3s eccentric. Drive floor away on ascent."}
+      {label:"A &mdash; Primary compound",rest:"90s rest",exercises:[
+        {name:"Double KB front rack squat",weight:"2x50lb",params:"SxR",sets:5,reps:"6",note:"3s eccentric + 2s pause at bottom. Explode up. No bouncing out of hole."}
       ]},
-      {label:"B — Superset",rest:"60s rest after both",superset:true,exercises:[
-        {name:"KB Bulgarian split squat",weight:"35lb",params:"SxR/side",sets:3,reps:"8"},
-        {name:"Double KB swing",weight:"2x35lb",params:"SxR",sets:3,reps:"10"}
+      {label:"B &mdash; Superset",rest:"60s rest after both",superset:true,exercises:[
+        {name:"Double KB RDL",weight:"2x50lb",params:"SxR",sets:4,reps:"10"},
+        {name:"Walking lunge",weight:"2x35lb",params:"SxR/side",sets:4,reps:"10"}
       ]},
-      {label:"C — Finisher",rest:"60s rest",exercises:[
-        {name:"KB suitcase carry",weight:"70lb",params:"SxT/side",sets:3,reps:"40s"},
-        {name:"Goblet pulse squat",weight:"35lb",params:"SxT",sets:2,reps:"20s"}
+      {label:"C &mdash; Accessories",rest:"60s rest",exercises:[
+        {name:"Single-leg KB RDL",weight:"50lb",params:"SxR/side",sets:4,reps:"10"},
+        {name:"1.5-rep goblet squat",weight:"50lb",params:"SxR",sets:4,reps:"8"},
+        {name:"KB suitcase carry",weight:"70lb",params:"SxT/side",sets:4,reps:"50s"}
+      ]}
+    ]
+  },
+  {
+    name:"Upper B",sub:"Thursday &middot; Pull Focus",tag:"upper",
+    warmup:[
+      {name:"KB arm bar + thoracic rotation",time:"45s/side"},
+      {name:"Dead hang or doorframe stretch",time:"45s"},
+      {name:"Band pull-aparts",time:"2x20"}
+    ],
+    blocks:[
+      {label:"A &mdash; Primary compound",rest:"90s rest",exercises:[
+        {name:"DKB chain: clean + push press + front squat",weight:"2x50lb",params:"SxR",sets:5,reps:"4",note:"Leg drive on push press. Pull back to rack before squat. Dead stop at bottom of squat."}
+      ]},
+      {label:"B &mdash; Superset",rest:"60s rest after both",superset:true,exercises:[
+        {name:"KB lawnmower row",weight:"50lb",params:"SxR/side",sets:4,reps:"12"},
+        {name:"KB single-arm strict press",weight:"50lb",params:"SxR/side",sets:4,reps:"8"}
+      ]},
+      {label:"C &mdash; Accessories",rest:"60s rest",exercises:[
+        {name:"KB windmill",weight:"35lb",params:"SxR/side",sets:4,reps:"6"},
+        {name:"KB racked Z press",weight:"2x35lb",params:"SxR",sets:4,reps:"8"},
+        {name:"KB curl two-handed",weight:"50lb",params:"SxR",sets:4,reps:"12"}
+      ]}
+    ]
+  },
+  {
+    name:"Lower B",sub:"Friday &middot; Hinge / Carry",tag:"lower",
+    warmup:[
+      {name:"Dead bug holds",time:"4x5s/side"},
+      {name:"Reverse Nordic negatives",time:"6 reps slow"},
+      {name:"Hip flexor + couch stretch",time:"60s/side"}
+    ],
+    blocks:[
+      {label:"A &mdash; Primary compound",rest:"90s rest",exercises:[
+        {name:"Double KB sumo deadlift",weight:"2x50lb",params:"SxR",sets:5,reps:"6",note:"3s eccentric. Full stop at bottom each rep. Drive floor away."}
+      ]},
+      {label:"B &mdash; Superset",rest:"60s rest after both",superset:true,exercises:[
+        {name:"KB Bulgarian split squat",weight:"50lb",params:"SxR/side",sets:4,reps:"10"},
+        {name:"KB heavy swing",weight:"70lb",params:"SxR",sets:4,reps:"10"}
+      ]},
+      {label:"C &mdash; Accessories",rest:"60s rest",exercises:[
+        {name:"Heels-elevated goblet squat",weight:"50lb",params:"SxR",sets:4,reps:"12"},
+        {name:"KB snatch",weight:"35lb",params:"SxR/side",sets:4,reps:"6"},
+        {name:"KB goblet march",weight:"50lb",params:"SxT",sets:4,reps:"55s"}
+      ]}
+    ]
+  },
+  {
+    name:"Conditioning",sub:"Weekend &middot; Cardio + Core",tag:"cond",
+    warmup:[
+      {name:"Jump rope or jog in place",time:"3 min"},
+      {name:"Hip 90/90 + thoracic rotation",time:"60s/side"},
+      {name:"Dead bug holds",time:"3x5s/side"}
+    ],
+    blocks:[
+      {label:"A &mdash; KB Complex",rest:"90s between rounds",exercises:[
+        {name:"Swing x5 + clean x3 + press x3 + squat x3",weight:"2x35lb",params:"SxR",sets:5,reps:"1 round",note:"Complete all reps of each movement before moving on. No rest within complex. 90s between rounds."}
+      ]},
+      {label:"B &mdash; Core circuit",rest:"45s rest",exercises:[
+        {name:"KB Turkish get-up",weight:"35lb",params:"SxR/side",sets:3,reps:"3"},
+        {name:"KB windmill",weight:"35lb",params:"SxR/side",sets:3,reps:"6"},
+        {name:"Dead bug KB press-out",weight:"35lb",params:"SxR/side",sets:3,reps:"8"}
+      ]},
+      {label:"C &mdash; Carries + finisher",rest:"45s rest",exercises:[
+        {name:"KB suitcase carry",weight:"70lb",params:"SxT/side",sets:3,reps:"45s"},
+        {name:"KB goblet march",weight:"50lb",params:"SxT",sets:3,reps:"40s"},
+        {name:"Double KB swing",weight:"2x35lb",params:"SxR",sets:3,reps:"15"}
       ]}
     ]
   }
 ];
 
-// Week overrides: weekNum -> dayIdx -> {blocks: {blockIdx: {exIdx: {sets,reps,weight,name,note}}}, deload:bool}
-var OV = {
+// Overrides — every week builds on week 1 baseline
+var OV={
   2:{
-    0:{blocks:{0:{0:{sets:3,reps:"6"}},1:{0:{reps:"9/side"},1:{reps:"11"}},2:{0:{sets:4,weight:"35lb"},1:{sets:4,weight:"50lb"},2:{sets:4,weight:"2x50lb"}}}},
-    1:{blocks:{0:{0:{sets:3,reps:"7"}},1:{0:{reps:"9"},1:{weight:"2x50lb"}},2:{0:{sets:4,weight:"50lb"},1:{sets:4,weight:"50lb"},2:{sets:4}}}},
-    2:{blocks:{0:{0:{sets:4,reps:"7"}},1:{0:{reps:"11/side"},1:{weight:"50lb"}},2:{0:{sets:4},1:{sets:4,weight:"50lb"},2:{sets:4}}}},
-    3:{blocks:{0:{0:{sets:4,reps:"7"}},1:{0:{weight:"50lb"},1:{weight:"2x50lb"}},2:{0:{sets:4},1:{sets:3,weight:"50lb"}}}}
+    0:{blocks:{0:{0:{reps:"5"}},1:{0:{reps:"11/side"},1:{reps:"13"}},2:{0:{},1:{reps:"13"},2:{reps:"11/side"}}}},
+    1:{blocks:{0:{0:{reps:"7"}},1:{0:{reps:"11"},1:{reps:"11/side"}},2:{0:{reps:"11"},1:{reps:"9"},2:{reps:"55s"}}}},
+    2:{blocks:{0:{0:{reps:"5"}},1:{0:{reps:"13/side"},1:{reps:"9/side"}},2:{0:{reps:"7/side"},1:{reps:"9"},2:{reps:"13"}}}},
+    3:{blocks:{0:{0:{reps:"7"}},1:{0:{reps:"11/side"},1:{reps:"11"}},2:{0:{reps:"13"},1:{reps:"7/side"},2:{reps:"60s"}}}},
+    4:{blocks:{0:{0:{sets:5,reps:"1 round"}},1:{},2:{}}}
   },
   3:{
-    0:{blocks:{0:{0:{sets:4,reps:"5",note:"Add 2s pause at press lockout."}},1:{0:{sets:4},1:{sets:4}},2:{0:{sets:4,weight:"35lb"},1:{sets:4,name:"KB skull crusher",weight:"50lb"},2:{sets:4,name:"See-saw press",weight:"2x50lb",reps:"8/side"}}}},
-    1:{blocks:{0:{0:{sets:4,reps:"6",note:"Add 2s pause at bottom each rep."}},1:{0:{sets:4},1:{sets:4,name:"Walking lunge",weight:"2x50lb",reps:"8/side"}},2:{0:{sets:4,weight:"50lb"},1:{sets:4,name:"Heels-elevated goblet squat",weight:"50lb",reps:"10"},2:{sets:4,name:"Hollow hold KB press",weight:"",reps:"10"}}}},
-    2:{blocks:{0:{0:{sets:4,reps:"6"}},1:{0:{sets:4},1:{sets:4,name:"KB clean + press",reps:"5/side"}},2:{0:{sets:4},1:{sets:4,weight:"50lb"},2:{sets:4,name:"Renegade row",weight:"2x50lb",reps:"8/side"}}}},
-    3:{blocks:{0:{0:{sets:4,reps:"6"}},1:{0:{sets:4,weight:"50lb"},1:{sets:4,name:"KB swing heavy",weight:"70lb",reps:"8"}},2:{0:{sets:4,reps:"50s/side"},1:{sets:4,name:"1.5-rep goblet squat",weight:"50lb",reps:"6"}}}}
+    0:{blocks:{0:{0:{sets:5,reps:"5",note:"Reduce rest to 75s. No momentum between reps."}},1:{0:{sets:5,reps:"11/side"},1:{sets:5,reps:"13"}},2:{0:{},1:{reps:"13"},2:{reps:"11/side"}}}},
+    1:{blocks:{0:{0:{sets:5,reps:"7",note:"3s eccentric + 3s pause. Maximum depth."}},1:{0:{sets:5,reps:"11"},1:{sets:5,reps:"11/side"}},2:{0:{reps:"12"},1:{reps:"10"},2:{reps:"55s"}}}},
+    2:{blocks:{0:{0:{sets:5,reps:"5",note:"Reduce rest to 75s. Pull hard on the clean."}},1:{0:{sets:5,reps:"13/side"},1:{sets:5,reps:"9/side"}},2:{0:{reps:"7/side"},1:{reps:"10"},2:{reps:"13"}}}},
+    3:{blocks:{0:{0:{sets:5,reps:"7",note:"Reduce rest to 75s. 3s eccentric."}},1:{0:{sets:5,reps:"11/side"},1:{sets:5,reps:"12"}},2:{0:{reps:"14"},1:{reps:"7/side"},2:{reps:"60s"}}}},
+    4:{blocks:{0:{0:{sets:5,reps:"1 round",note:"Push pace — 75s max rest between rounds."}},1:{},2:{}}}
   },
   4:{
-    0:{blocks:{0:{0:{sets:4,reps:"5"}},1:{0:{sets:4,reps:"9/side"},1:{sets:4,reps:"11"}},2:{0:{sets:4,weight:"35lb"},1:{sets:4,name:"KB skull crusher",weight:"50lb",reps:"10"},2:{sets:4,name:"See-saw press",weight:"2x50lb",reps:"10/side"}}}},
-    1:{blocks:{0:{0:{sets:4,reps:"7"}},1:{0:{sets:4,reps:"9"},1:{sets:4,name:"Walking lunge",weight:"2x50lb",reps:"9/side"}},2:{0:{sets:4,weight:"50lb"},1:{sets:4,name:"Heels-elevated goblet squat",weight:"50lb",reps:"11"},2:{sets:4,name:"Hollow hold KB press",weight:"",reps:"10"}}}},
-    2:{blocks:{0:{0:{sets:4,reps:"7"}},1:{0:{sets:4,reps:"11/side"},1:{sets:4,name:"KB clean + press",reps:"6/side"}},2:{0:{sets:4},1:{sets:4,weight:"50lb"},2:{sets:4,name:"Renegade row",weight:"2x50lb",reps:"8/side"}}}},
-    3:{blocks:{0:{0:{sets:4,reps:"7"}},1:{0:{sets:4,weight:"50lb"},1:{sets:4,name:"KB swing heavy",weight:"70lb",reps:"9"}},2:{0:{sets:4,reps:"50s/side"},1:{sets:4,name:"1.5-rep goblet squat",weight:"50lb",reps:"7"}}}}
+    0:{blocks:{0:{0:{sets:5,reps:"6",note:"75s rest. Each chain at RPE 9."}},1:{0:{sets:5,reps:"12/side"},1:{sets:5,reps:"14"}},2:{0:{},1:{reps:"14"},2:{reps:"12/side"}}}},
+    1:{blocks:{0:{0:{sets:5,reps:"8",note:"3s eccentric + 2s pause. Add weight to lunge if 10/side feels easy."}},1:{0:{sets:5,reps:"12"},1:{sets:5,reps:"12/side",weight:"2x50lb"}},2:{0:{reps:"12"},1:{reps:"10"},2:{reps:"60s"}}}},
+    2:{blocks:{0:{0:{sets:5,reps:"6",note:"75s rest. Push press with intent."}},1:{0:{sets:5,reps:"14/side"},1:{sets:5,reps:"10/side"}},2:{0:{reps:"8/side"},1:{reps:"10"},2:{reps:"14"}}}},
+    3:{blocks:{0:{0:{sets:5,reps:"8",note:"75s rest. 3s eccentric strictly."}},1:{0:{sets:5,reps:"12/side"},1:{sets:5,reps:"12"}},2:{0:{reps:"14"},1:{reps:"8/side"},2:{reps:"65s"}}}},
+    4:{blocks:{0:{0:{sets:6,reps:"1 round",note:"6 rounds. 75s rest max."}},1:{0:{sets:3,reps:"4"}},2:{0:{sets:4,reps:"50s/side"},1:{sets:4,reps:"45s"},2:{sets:4,reps:"18"}}}}
   },
   5:{
-    0:{blocks:{0:{0:{sets:5,reps:"4",name:"DKB chain: clean+press+squat",note:"1 clean + 1 press + 1 squat = 1 rep."}},1:{0:{sets:4,reps:"10/side"},1:{sets:4,reps:"12"}},2:{0:{sets:4,name:"KB skull crusher",weight:"50lb",reps:"12"},1:{sets:4,name:"KB push-ups on handles",weight:"",reps:"max"},2:{sets:4,name:"See-saw press",weight:"2x50lb",reps:"10/side"}}}},
-    1:{blocks:{0:{0:{sets:5,reps:"6",note:"3s eccentric + 2s pause + explode up."}},1:{0:{sets:4,reps:"10"},1:{sets:4,name:"Walking lunge",weight:"2x50lb",reps:"10/side"}},2:{0:{sets:4,name:"1.5-rep goblet squat",weight:"50lb",reps:"8"},1:{sets:4,name:"Heels-elevated goblet squat",weight:"50lb",reps:"12"},2:{sets:4,name:"KB suitcase carry",weight:"70lb",reps:"60s/side"}}}},
-    2:{blocks:{0:{0:{sets:5,reps:"4",name:"DKB chain: clean+push press+squat",note:"Legs drive push press. Pull to rack before squat."}},1:{0:{sets:4,reps:"12/side"},1:{sets:4,name:"KB clean + strict press",reps:"6/side"}},2:{0:{sets:4},1:{sets:4,name:"KB racked Z press",weight:"2x35lb",reps:"8"},2:{sets:4,weight:"50lb",reps:"15"}}}},
-    3:{blocks:{0:{0:{sets:5,reps:"6"}},1:{0:{sets:4,weight:"50lb",reps:"10/side"},1:{sets:4,name:"KB heavy swing",weight:"70lb",reps:"10"}},2:{0:{sets:4,name:"KB snatch",weight:"35lb",reps:"6/side"},1:{sets:4,name:"KB goblet march",weight:"50lb",reps:"50s"},2:{sets:4,name:"Reverse Nordic",weight:"",reps:"10"}}}}
+    0:{blocks:{0:{0:{sets:6,reps:"5",note:"60s rest. If form breaks, stop the set."}},1:{0:{sets:5,reps:"13/side"},1:{sets:5,reps:"15"}},2:{0:{},1:{reps:"15"},2:{reps:"13/side"}}}},
+    1:{blocks:{0:{0:{sets:6,reps:"7",note:"60s rest. Add 2s pause every rep."}},1:{0:{sets:5,reps:"13"},1:{sets:5,reps:"13/side",weight:"2x50lb"}},2:{0:{reps:"13"},1:{reps:"11"},2:{reps:"65s"}}}},
+    2:{blocks:{0:{0:{sets:6,reps:"5",note:"60s rest. Leg drive on every push press."}},1:{0:{sets:5,reps:"15/side"},1:{sets:5,reps:"11/side"}},2:{0:{reps:"8/side"},1:{reps:"11"},2:{reps:"15"}}}},
+    3:{blocks:{0:{0:{sets:6,reps:"7",note:"60s rest. Strict 3s eccentric."}},1:{0:{sets:5,reps:"13/side"},1:{sets:5,reps:"13"}},2:{0:{reps:"15"},1:{reps:"8/side"},2:{reps:"70s"}}}},
+    4:{blocks:{0:{0:{sets:6,reps:"1 round",note:"60s rest max. Push every round."}},1:{0:{sets:3,reps:"4"}},2:{0:{sets:4,reps:"55s/side"},1:{sets:4,reps:"50s"},2:{sets:4,reps:"20"}}}}
   },
   6:{
-    0:{blocks:{0:{0:{sets:5,reps:"4"}},1:{0:{sets:4,reps:"11/side"},1:{sets:4,reps:"13"}},2:{0:{sets:4,name:"KB skull crusher",weight:"50lb",reps:"13"},1:{sets:4,name:"KB push-ups on handles",weight:"",reps:"max"},2:{sets:4,name:"See-saw press",weight:"2x50lb",reps:"11/side"}}}},
-    1:{blocks:{0:{0:{sets:5,reps:"7"}}  ,1:{0:{sets:4,reps:"11"},1:{sets:4,name:"Walking lunge",weight:"2x50lb",reps:"11/side"}},2:{0:{sets:4,name:"1.5-rep goblet squat",weight:"50lb",reps:"9"},1:{sets:4,name:"Heels-elevated goblet squat",weight:"50lb",reps:"13"},2:{sets:4,name:"KB suitcase carry",weight:"70lb",reps:"60s/side"}}}},
-    2:{blocks:{0:{0:{sets:5,reps:"5"}}  ,1:{0:{sets:4,reps:"12/side"},1:{sets:4,name:"KB clean + strict press",reps:"6/side"}},2:{0:{sets:4},1:{sets:4,name:"KB racked Z press",weight:"2x35lb",reps:"9"},2:{sets:4,weight:"50lb",reps:"15"}}}},
-    3:{blocks:{0:{0:{sets:5,reps:"7"}}  ,1:{0:{sets:4,weight:"50lb",reps:"10/side"},1:{sets:4,name:"KB heavy swing",weight:"70lb",reps:"10"}},2:{0:{sets:4,name:"KB snatch",weight:"35lb",reps:"6/side"},1:{sets:4,name:"KB goblet march",weight:"50lb",reps:"55s"},2:{sets:4,name:"Reverse Nordic",weight:"",reps:"11"}}}}
+    0:{blocks:{0:{0:{sets:6,reps:"5",note:"60s rest. Peak intensity — 2 reps in reserve max."}},1:{0:{sets:5,reps:"14/side"},1:{sets:5,reps:"16"}},2:{0:{},1:{reps:"16"},2:{reps:"14/side"}}}},
+    1:{blocks:{0:{0:{sets:6,reps:"8",note:"60s rest. 3s eccentric + 2s pause. Every rep counts."}},1:{0:{sets:5,reps:"14"},1:{sets:5,reps:"14/side",weight:"2x50lb"}},2:{0:{reps:"14"},1:{reps:"12"},2:{reps:"70s"}}}},
+    2:{blocks:{0:{0:{sets:6,reps:"6",note:"60s rest. Peak — full power on every press."}},1:{0:{sets:5,reps:"15/side"},1:{sets:5,reps:"12/side"}},2:{0:{reps:"9/side"},1:{reps:"12"},2:{reps:"16"}}}},
+    3:{blocks:{0:{0:{sets:6,reps:"8",note:"60s rest. Heaviest week. Control every eccentric."}},1:{0:{sets:5,reps:"14/side"},1:{sets:5,reps:"14"}},2:{0:{reps:"16"},1:{reps:"9/side"},2:{reps:"75s"}}}},
+    4:{blocks:{0:{0:{sets:7,reps:"1 round",note:"7 rounds. 60s rest. Hardest conditioning week."}},1:{0:{sets:3,reps:"5"}},2:{0:{sets:4,reps:"60s/side"},1:{sets:4,reps:"55s"},2:{sets:4,reps:"22"}}}}
   },
   7:{
-    0:{blocks:{0:{0:{sets:5,reps:"5"}},1:{0:{sets:4,reps:"12/side"},1:{sets:4,reps:"14"}},2:{0:{sets:4,name:"KB skull crusher",weight:"50lb",reps:"14"},1:{sets:4,name:"KB push-ups on handles",weight:"",reps:"max"},2:{sets:4,name:"See-saw press",weight:"2x50lb",reps:"11/side"}}}},
-    1:{blocks:{0:{0:{sets:5,reps:"7"}},1:{0:{sets:4,reps:"12"},1:{sets:4,name:"Walking lunge",weight:"2x50lb",reps:"11/side"}},2:{0:{sets:4,name:"1.5-rep goblet squat",weight:"50lb",reps:"10"},1:{sets:4,name:"Heels-elevated goblet squat",weight:"50lb",reps:"14"},2:{sets:4,name:"KB suitcase carry",weight:"70lb",reps:"65s/side"}}}},
-    2:{blocks:{0:{0:{sets:5,reps:"5"}},1:{0:{sets:4,reps:"13/side"},1:{sets:4,name:"KB clean + strict press",reps:"7/side"}},2:{0:{sets:4},1:{sets:4,name:"KB racked Z press",weight:"2x35lb",reps:"10"},2:{sets:4,weight:"50lb",reps:"16"}}}},
-    3:{blocks:{0:{0:{sets:5,reps:"7"}},1:{0:{sets:4,weight:"50lb",reps:"11/side"},1:{sets:4,name:"KB heavy swing",weight:"70lb",reps:"11"}},2:{0:{sets:4,name:"KB snatch",weight:"35lb",reps:"6/side"},1:{sets:4,name:"KB goblet march",weight:"50lb",reps:"60s"},2:{sets:4,name:"Reverse Nordic",weight:"",reps:"12"}}}}
+    0:{blocks:{0:{0:{sets:6,reps:"6",note:"60s rest. Absolute peak. 1 rep in reserve only."}},1:{0:{sets:5,reps:"15/side"},1:{sets:5,reps:"17"}},2:{0:{},1:{reps:"17"},2:{reps:"15/side"}}}},
+    1:{blocks:{0:{0:{sets:6,reps:"9",note:"60s rest. Final peak. 3s eccentric + 2s pause."}},1:{0:{sets:5,reps:"15"},1:{sets:5,reps:"15/side",weight:"2x50lb"}},2:{0:{reps:"14"},1:{reps:"12"},2:{reps:"75s"}}}},
+    2:{blocks:{0:{0:{sets:6,reps:"6",note:"60s rest. Best week of the block. Leave nothing."}},1:{0:{sets:5,reps:"16/side"},1:{sets:5,reps:"12/side"}},2:{0:{reps:"9/side"},1:{reps:"12"},2:{reps:"16"}}}},
+    3:{blocks:{0:{0:{sets:6,reps:"9",note:"60s rest. Final push — 3s eccentric strictly."}},1:{0:{sets:5,reps:"15/side"},1:{sets:5,reps:"15"}},2:{0:{reps:"17"},1:{reps:"9/side"},2:{reps:"80s"}}}},
+    4:{blocks:{0:{0:{sets:7,reps:"1 round",note:"7 rounds. 60s rest. Final conditioning push."}},1:{0:{sets:3,reps:"5"}},2:{0:{sets:4,reps:"60s/side"},1:{sets:4,reps:"55s"},2:{sets:4,reps:"22"}}}}
   },
   8:{
-    0:{deload:true,blocks:{0:{0:{sets:2,reps:"4"}},1:{0:{sets:2,reps:"6/side"},1:{sets:2,reps:"8"}},2:{0:{sets:2,weight:"35lb",reps:"6/side"},1:{sets:2,weight:"35lb",reps:"8"}}}},
-    1:{deload:true,blocks:{0:{0:{sets:2,reps:"4"}},1:{0:{sets:2,reps:"6"},1:{sets:2,reps:"6/side"}},2:{0:{sets:2,reps:"6/side"},1:{sets:2,reps:"30s"}}}},
-    2:{deload:true,blocks:{0:{0:{sets:2,reps:"4"}},1:{0:{sets:2,reps:"8/side"},1:{sets:2,reps:"6/side"}},2:{0:{sets:2,reps:"4/side"},1:{sets:2,reps:"8"}}}},
-    3:{deload:true,blocks:{0:{0:{sets:2,reps:"4"}},1:{0:{sets:2,reps:"6/side"},1:{sets:2,reps:"8"}},2:{0:{sets:2,reps:"30s/side"}}}}
+    0:{deload:true,blocks:{0:{0:{sets:3,reps:"3",note:"Easy pace. Movement quality only. 90s rest."}},1:{0:{sets:2,reps:"8/side"},1:{sets:2,reps:"10"}},2:{0:{sets:2,reps:"5/side"},1:{sets:2,reps:"8"},2:{sets:2,reps:"8/side"}}}},
+    1:{deload:true,blocks:{0:{0:{sets:3,reps:"5",note:"50% intensity. Just move well."}},1:{0:{sets:2,reps:"8"},1:{sets:2,reps:"8/side",weight:"2x35lb"}},2:{0:{sets:2,reps:"8"},1:{sets:2,reps:"6"},2:{sets:2,reps:"30s"}}}},
+    2:{deload:true,blocks:{0:{0:{sets:3,reps:"3",note:"Easy pace. 90s rest."}},1:{0:{sets:2,reps:"10/side"},1:{sets:2,reps:"6/side"}},2:{0:{sets:2,reps:"5/side"},1:{sets:2,reps:"6"},2:{sets:2,reps:"8"}}}},
+    3:{deload:true,blocks:{0:{0:{sets:3,reps:"5",note:"50% intensity."}},1:{0:{sets:2,reps:"8/side"},1:{sets:2,reps:"8"}},2:{0:{sets:2,reps:"10"},1:{sets:2,reps:"5/side"},2:{sets:2,reps:"30s"}}}},
+    4:{deload:true,blocks:{0:{0:{sets:3,reps:"1 round",note:"Easy pace. Focus on form not speed."}},1:{0:{sets:2,reps:"3"}},2:{0:{sets:2,reps:"30s/side"},1:{sets:2,reps:"30s"},2:{sets:2,reps:"10"}}}}
   }
 };
 
-// ── State ─────────────────────────────────────────────────────
-var currentWeek = 1;
-var currentDay = 0;
-var setsDone = {};
+var currentWeek=1,currentDay=0,setsDone={};
 
-function setKey(w,d,b,e,s){ return w+"_"+d+"_"+b+"_"+e+"_"+s; }
-function isDone(w,d,b,e,s){ return !!setsDone[setKey(w,d,b,e,s)]; }
-function toggleSet(w,d,b,e,s){ var k=setKey(w,d,b,e,s); setsDone[k]=!setsDone[k]; render(); }
+function setKey(w,d,b,e,s){return w+"_"+d+"_"+b+"_"+e+"_"+s;}
+function isDone(w,d,b,e,s){return !!setsDone[setKey(w,d,b,e,s)];}
+function toggleSet(w,d,b,e,s){var k=setKey(w,d,b,e,s);setsDone[k]=!setsDone[k];render();}
 
 function resetDay(){
-  var pre = currentWeek+"_"+currentDay+"_";
-  Object.keys(setsDone).forEach(function(k){ if(k.indexOf(pre)===0) delete setsDone[k]; });
+  var pre=currentWeek+"_"+currentDay+"_";
+  Object.keys(setsDone).forEach(function(k){if(k.indexOf(pre)===0)delete setsDone[k];});
   render();
 }
 
-function switchDay(d,btn){
+function switchDay(d){
   currentDay=d;
-  document.querySelectorAll('.day-tab').forEach(function(t,i){ t.classList.toggle('active',i===d); });
+  document.querySelectorAll('.day-tab').forEach(function(t,i){
+    t.classList.remove('active','cond-active');
+    if(i===d)t.classList.add(i===4?'cond-active':'active');
+  });
   render();
 }
 
 function switchWeek(w){
   currentWeek=w;
-  document.querySelectorAll('.week-btn').forEach(function(b,i){ b.classList.toggle('active',i===(w-1)); });
+  document.querySelectorAll('.week-btn').forEach(function(b,i){b.classList.toggle('active',i===(w-1));});
   render();
 }
 
-// ── Helpers ───────────────────────────────────────────────────
 function getEx(di,bi,ei){
-  var ex = JSON.parse(JSON.stringify(DAYS[di].blocks[bi].exercises[ei]));
-  var dow = OV[currentWeek];
-  if(dow && dow[di] && dow[di].blocks && dow[di].blocks[bi] && dow[di].blocks[bi][ei]){
-    var o = dow[di].blocks[bi][ei];
-    if(o.name  !== undefined) ex.name   = o.name;
-    if(o.weight!== undefined) ex.weight = o.weight;
-    if(o.note  !== undefined) ex.note   = o.note;
-    if(o.sets  !== undefined) ex.sets   = o.sets;
-    if(o.reps  !== undefined) ex.reps   = o.reps;
+  var ex=JSON.parse(JSON.stringify(DAYS[di].blocks[bi].exercises[ei]));
+  var dow=OV[currentWeek];
+  if(dow&&dow[di]&&dow[di].blocks&&dow[di].blocks[bi]&&dow[di].blocks[bi][ei]){
+    var o=dow[di].blocks[bi][ei];
+    if(o.name!==undefined)ex.name=o.name;
+    if(o.weight!==undefined)ex.weight=o.weight;
+    if(o.note!==undefined)ex.note=o.note;
+    if(o.sets!==undefined)ex.sets=o.sets;
+    if(o.reps!==undefined)ex.reps=o.reps;
   }
   return ex;
 }
 
-function isDeload(){ var d=OV[currentWeek]; return d && d[currentDay] && d[currentDay].deload; }
+function isDeload(){var d=OV[currentWeek];return d&&d[currentDay]&&d[currentDay].deload;}
 
-// ── Training render ───────────────────────────────────────────
 function render(){
-  var day=DAYS[currentDay], wi=WEEKS[currentWeek-1], deload=isDeload();
-  var h='';
-  h+='<div class="phase-badge">Phase: <span>'+wi.phase+'</span> &nbsp;&middot;&nbsp; '+wi.rpe+(deload?' &nbsp;&middot;&nbsp; <span style="color:var(--accent3)">DELOAD</span>':'')+'</div>';
-  h+='<div style="margin-bottom:16px"><div class="day-title">'+day.name+'</div><div class="day-meta">'+day.sub+'</div>';
-  h+='<span class="day-focus-tag tag-'+day.tag+'">'+(day.tag==='upper'?'Upper body':'Lower body')+'</span></div>';
-
+  var day=DAYS[currentDay],wi=WEEKS[currentWeek-1],deload=isDeload(),isCond=currentDay===4;
+  var h='<div class="phase-badge">Phase: <span>'+wi.phase+'</span> &nbsp;&middot;&nbsp; '+wi.rpe+(deload?' &nbsp;&middot;&nbsp; <span style="color:var(--accent3)">DELOAD</span>':'')+'</div>';
+  var tagClass=isCond?'tag-cond':(day.tag==='upper'?'tag-upper':'tag-lower');
+  var tagLabel=isCond?'Conditioning + Core':(day.tag==='upper'?'Upper body':'Lower body');
+  h+='<div style="margin-bottom:16px"><div class="day-title">'+day.name+'</div><div class="day-meta">'+day.sub+'</div><span class="day-focus-tag '+tagClass+'">'+tagLabel+'</span></div>';
   h+='<div class="warmup-block"><div class="warmup-title">Warm-up &middot; 5 min</div>';
-  day.warmup.forEach(function(w){ h+='<div class="warmup-item"><span>'+w.name+'</span><span class="warmup-time">'+w.time+'</span></div>'; });
+  day.warmup.forEach(function(w){h+='<div class="warmup-item"><span>'+w.name+'</span><span class="warmup-time">'+w.time+'</span></div>';});
   h+='</div>';
-
   day.blocks.forEach(function(block,bi){
-    if(deload && bi===2 && currentDay===3) return;
     h+='<div class="block"><div class="block-label">'+block.label+' <span>&middot; '+block.rest+'</span></div>';
-    if(block.superset) h+='<div class="superset-label">Superset &mdash; complete both before resting</div>';
+    if(block.superset)h+='<div class="superset-label">Superset &mdash; complete both before resting</div>';
     block.exercises.forEach(function(ex,ei){
       var e=getEx(currentDay,bi,ei);
       var allDone=true;
-      for(var s=0;s<e.sets;s++){ if(!isDone(currentWeek,currentDay,bi,ei,s)){allDone=false;break;} }
-      h+='<div class="exercise'+(allDone?' checked':'')+'"><div class="ex-top"><span class="ex-name">'+e.name+'</span><span class="ex-params">'+e.sets+'&times;'+e.reps+'</span></div>';
-      if(e.weight) h+='<div class="ex-weight">'+e.weight+'</div>';
-      if(e.note)   h+='<div class="ex-note">'+e.note+'</div>';
+      for(var s=0;s<e.sets;s++){if(!isDone(currentWeek,currentDay,bi,ei,s)){allDone=false;break;}}
+      var paramStr=e.sets+'&times;'+e.reps;
+      h+='<div class="exercise'+(allDone?' checked':'')+'"><div class="ex-top"><span class="ex-name">'+e.name+'</span><span class="ex-params">'+paramStr+'</span></div>';
+      if(e.weight)h+='<div class="ex-weight">'+e.weight+'</div>';
+      if(e.note)h+='<div class="ex-note">'+e.note+'</div>';
       h+='<div class="set-row">';
       for(var s=0;s<e.sets;s++){
         var done=isDone(currentWeek,currentDay,bi,ei,s);
@@ -365,23 +376,25 @@ function render(){
     });
     h+='</div>';
   });
-
-  // progress
   var total=0,done=0;
   day.blocks.forEach(function(block,bi){
-    if(deload && bi===2 && currentDay===3) return;
     block.exercises.forEach(function(ex,ei){
       var e=getEx(currentDay,bi,ei);
       total+=e.sets;
-      for(var s=0;s<e.sets;s++){ if(isDone(currentWeek,currentDay,bi,ei,s)) done++; }
+      for(var s=0;s<e.sets;s++){if(isDone(currentWeek,currentDay,bi,ei,s))done++;}
     });
   });
   var pct=total>0?Math.round(done/total*100):0;
-  h+='<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:8px">';
-  h+='<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-family:var(--font-head);font-size:11px;color:var(--muted)"><span>Session progress</span><span style="color:var(--accent)">'+done+' / '+total+' sets</span></div>';
-  h+='<div class="progress-bar-wrap"><div class="progress-bar" style="width:'+pct+'%"></div></div></div>';
-
+  h+='<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:8px"><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-family:var(--font-head);font-size:11px;color:var(--muted)"><span>Session progress</span><span style="color:var(--accent)">'+done+' / '+total+' sets</span></div><div class="progress-bar-wrap"><div class="progress-bar" style="width:'+pct+'%"></div></div></div>';
   document.getElementById('mainContent').innerHTML=h;
+}
+
+function buildDayTabs(){
+  var labels=['Mon','Tue','Thu','Fri','Wknd'];
+  document.getElementById('dayTabs').innerHTML=labels.map(function(l,i){
+    return '<button class="day-tab" onclick="switchDay('+i+')">'+l+'</button>';
+  }).join('');
+  document.querySelector('.day-tab').classList.add('active');
 }
 
 function buildWeekSelector(){
@@ -390,7 +403,6 @@ function buildWeekSelector(){
   }).join('');
 }
 
-// ── Tab switching ─────────────────────────────────────────────
 function switchTab(tab){
   var isT=tab==='training';
   document.getElementById('trainingHeader').style.display=isT?'':'none';
@@ -400,12 +412,10 @@ function switchTab(tab){
   document.getElementById('nutritionContent').style.display=isT?'none':'';
   document.getElementById('navTraining').classList.toggle('active',isT);
   document.getElementById('navNutrition').classList.toggle('active',!isT);
-  if(!isT) renderNutrition();
+  if(!isT)renderNutrition();
 }
 
-// ── Nutrition ─────────────────────────────────────────────────
-var TARGETS={cal:2950,protein:200,carbs:350,fat:80};
-
+var TARGETS={cal:3100,protein:210,carbs:370,fat:85};
 var FOOD_REF=[
   {name:"Promix whey (1 scoop)",cal:120,protein:25,carbs:3,fat:2},
   {name:"Eggs x3",cal:210,protein:18,carbs:1,fat:15},
@@ -420,17 +430,15 @@ var FOOD_REF=[
   {name:"Olive oil (1 tbsp)",cal:120,protein:0,carbs:0,fat:14},
   {name:"Cottage cheese (1 cup)",cal:200,protein:24,carbs:8,fat:9}
 ];
-
 var TIMING=[
   {time:"5:15 AM",label:"Pre-workout",desc:"Half scoop Kaged + banana or rice cake"},
   {time:"6:30 AM",label:"Post-workout",desc:"Promix shake + oats + fruit (40g pro)"},
   {time:"9:00 AM",label:"Breakfast",desc:"Eggs + potatoes + whole milk"},
   {time:"12:30 PM",label:"Lunch",desc:"Rice + ground beef or chicken + veg"},
-  {time:"3:30 PM",label:"Snack",desc:"Greek yogurt + banana"},
+  {time:"3:30 PM",label:"Snack",desc:"Greek yogurt + banana + handful of nuts"},
   {time:"7:00 PM",label:"Dinner",desc:"Protein + starch + fat source"},
   {time:"9:00 PM",label:"Optional",desc:"Cottage cheese if under protein target"}
 ];
-
 var meals=[
   {name:"Pre-workout",cal:"",protein:"",carbs:"",fat:""},
   {name:"Post-workout shake",cal:"",protein:"",carbs:"",fat:""},
@@ -438,57 +446,37 @@ var meals=[
   {name:"Lunch",cal:"",protein:"",carbs:"",fat:""},
   {name:"Dinner",cal:"",protein:"",carbs:"",fat:""}
 ];
-
-function getTotals(){
-  return meals.reduce(function(t,m){
-    return {cal:t.cal+(parseFloat(m.cal)||0),protein:t.protein+(parseFloat(m.protein)||0),carbs:t.carbs+(parseFloat(m.carbs)||0),fat:t.fat+(parseFloat(m.fat)||0)};
-  },{cal:0,protein:0,carbs:0,fat:0});
-}
-
-function mcolor(p){ return p>=90?'var(--accent)':p>=60?'var(--accent3)':'var(--faint)'; }
-
-function addMeal(){ meals.push({name:"",cal:"",protein:"",carbs:"",fat:""}); renderNutrition(); setTimeout(function(){ var i=document.querySelectorAll('.meal-name-input'); if(i.length) i[i.length-1].focus(); },50); }
-function deleteMeal(i){ meals.splice(i,1); renderNutrition(); }
-function updateMeal(i,f,v){ meals[i][f]=v; renderNutritionSummary(); }
-function resetMeals(){ meals=[{name:"Pre-workout",cal:"",protein:"",carbs:"",fat:""},{name:"Post-workout shake",cal:"",protein:"",carbs:"",fat:""},{name:"Breakfast",cal:"",protein:"",carbs:"",fat:""},{name:"Lunch",cal:"",protein:"",carbs:"",fat:""},{name:"Dinner",cal:"",protein:"",carbs:"",fat:""}]; renderNutrition(); }
-
+function getTotals(){return meals.reduce(function(t,m){return{cal:t.cal+(parseFloat(m.cal)||0),protein:t.protein+(parseFloat(m.protein)||0),carbs:t.carbs+(parseFloat(m.carbs)||0),fat:t.fat+(parseFloat(m.fat)||0)};},{cal:0,protein:0,carbs:0,fat:0});}
+function mcolor(p){return p>=90?'var(--accent)':p>=60?'var(--accent3)':'var(--faint)';}
+function addMeal(){meals.push({name:"",cal:"",protein:"",carbs:"",fat:""});renderNutrition();setTimeout(function(){var i=document.querySelectorAll('.meal-name-input');if(i.length)i[i.length-1].focus();},50);}
+function deleteMeal(i){meals.splice(i,1);renderNutrition();}
+function updateMeal(i,f,v){meals[i][f]=v;renderNutritionSummary();}
+function resetMeals(){meals=[{name:"Pre-workout",cal:"",protein:"",carbs:"",fat:""},{name:"Post-workout shake",cal:"",protein:"",carbs:"",fat:""},{name:"Breakfast",cal:"",protein:"",carbs:"",fat:""},{name:"Lunch",cal:"",protein:"",carbs:"",fat:""},{name:"Dinner",cal:"",protein:"",carbs:"",fat:""}];renderNutrition();}
 function renderNutritionSummary(){
-  var el=document.getElementById('nutritionSummary'); if(!el) return;
+  var el=document.getElementById('nutritionSummary');if(!el)return;
   var t=getTotals();
   var fields=[{label:'Calories',key:'cal',unit:'kcal'},{label:'Protein',key:'protein',unit:'g'},{label:'Carbs',key:'carbs',unit:'g'},{label:'Fat',key:'fat',unit:'g'}];
   el.innerHTML=fields.map(function(f){
-    var v=Math.round(t[f.key]),tgt=TARGETS[f.key],rem=tgt-v;
-    var p=Math.min(100,Math.round(v/tgt*100)),col=mcolor(p);
-    var remStr=rem>0?'-'+rem:'+'+Math.abs(rem), remCol=rem>0?'var(--muted)':'var(--accent)';
+    var v=Math.round(t[f.key]),tgt=TARGETS[f.key],rem=tgt-v,p=Math.min(100,Math.round(v/tgt*100)),col=mcolor(p);
+    var remStr=rem>0?'-'+rem:'+'+Math.abs(rem),remCol=rem>0?'var(--muted)':'var(--accent)';
     return '<div class="summary-row"><span class="summary-label">'+f.label+'</span><div style="display:flex;align-items:center;gap:8px"><div class="summary-bar-wrap"><div class="summary-bar" style="width:'+p+'%;background:'+col+'"></div></div><span style="font-family:var(--font-head);font-size:13px;color:'+col+'">'+v+'<span style="color:var(--faint);font-size:11px">/'+tgt+f.unit+'</span></span><span style="font-family:var(--font-head);font-size:11px;color:'+remCol+';min-width:38px;text-align:right">'+remStr+'</span></div></div>';
   }).join('');
 }
-
 function renderNutrition(){
   var nc=document.getElementById('nutritionContent');
-  var h='<div id="nutritionSummary" class="daily-summary"></div>';
-  h+='<div style="margin-bottom:0"><div class="nutr-section-title">Meals today</div>';
+  var h='<div id="nutritionSummary" class="daily-summary"></div><div style="margin-bottom:0"><div class="nutr-section-title">Meals today</div>';
   meals.forEach(function(m,i){
-    h+='<div class="meal-entry">';
-    h+='<div class="meal-entry-top"><input class="meal-name-input" placeholder="Meal name..." value="'+m.name.replace(/"/g,'&quot;')+'" oninput="meals['+i+'].name=this.value"/><button class="delete-meal" onclick="deleteMeal('+i+')">&#215;</button></div>';
-    h+='<div class="meal-macros">';
-    h+='<div class="macro-input-wrap"><div class="macro-input-label">Cal</div><input class="macro-input" type="number" inputmode="numeric" placeholder="0" value="'+m.cal+'" oninput="updateMeal('+i+',\'cal\',this.value)"/></div>';
-    h+='<div class="macro-input-wrap"><div class="macro-input-label" style="color:var(--accent2)">Pro g</div><input class="macro-input" type="number" inputmode="numeric" placeholder="0" value="'+m.protein+'" oninput="updateMeal('+i+',\'protein\',this.value)"/></div>';
-    h+='<div class="macro-input-wrap"><div class="macro-input-label" style="color:var(--accent3)">Carb g</div><input class="macro-input" type="number" inputmode="numeric" placeholder="0" value="'+m.carbs+'" oninput="updateMeal('+i+',\'carbs\',this.value)"/></div>';
-    h+='<div class="macro-input-wrap"><div class="macro-input-label">Fat g</div><input class="macro-input" type="number" inputmode="numeric" placeholder="0" value="'+m.fat+'" oninput="updateMeal('+i+',\'fat\',this.value)"/></div>';
-    h+='</div></div>';
+    h+='<div class="meal-entry"><div class="meal-entry-top"><input class="meal-name-input" placeholder="Meal name..." value="'+m.name.replace(/"/g,'&quot;')+'" oninput="meals['+i+'].name=this.value"/><button class="delete-meal" onclick="deleteMeal('+i+')">&#215;</button></div><div class="meal-macros"><div class="macro-input-wrap"><div class="macro-input-label">Cal</div><input class="macro-input" type="number" inputmode="numeric" placeholder="0" value="'+m.cal+'" oninput="updateMeal('+i+',\'cal\',this.value)"/></div><div class="macro-input-wrap"><div class="macro-input-label" style="color:var(--accent2)">Pro g</div><input class="macro-input" type="number" inputmode="numeric" placeholder="0" value="'+m.protein+'" oninput="updateMeal('+i+',\'protein\',this.value)"/></div><div class="macro-input-wrap"><div class="macro-input-label" style="color:var(--accent3)">Carb g</div><input class="macro-input" type="number" inputmode="numeric" placeholder="0" value="'+m.carbs+'" oninput="updateMeal('+i+',\'carbs\',this.value)"/></div><div class="macro-input-wrap"><div class="macro-input-label">Fat g</div><input class="macro-input" type="number" inputmode="numeric" placeholder="0" value="'+m.fat+'" oninput="updateMeal('+i+',\'fat\',this.value)"/></div></div></div>';
   });
-  h+='</div><button class="add-meal-btn" onclick="addMeal()">+ Add meal</button>';
-  h+='<div class="nutr-section-title">Meal timing guide</div><div class="timing-card"><div class="timing-title">Training day schedule</div>';
-  TIMING.forEach(function(t){ h+='<div class="timing-row"><span>'+t.label+' &mdash; '+t.desc+'</span><span class="timing-time">'+t.time+'</span></div>'; });
+  h+='</div><button class="add-meal-btn" onclick="addMeal()">+ Add meal</button><div class="nutr-section-title">Meal timing guide</div><div class="timing-card"><div class="timing-title">Training day schedule</div>';
+  TIMING.forEach(function(t){h+='<div class="timing-row"><span>'+t.label+' &mdash; '+t.desc+'</span><span class="timing-time">'+t.time+'</span></div>';});
   h+='</div><div class="nutr-section-title">Protein reference</div><div class="food-ref">';
-  FOOD_REF.forEach(function(f){ h+='<div class="food-ref-row"><span>'+f.name+'</span><span style="font-family:var(--font-head);font-size:11px;text-align:right;line-height:1.8"><span class="food-protein">'+f.protein+'g pro</span> &middot; '+f.cal+'kcal</span></div>'; });
+  FOOD_REF.forEach(function(f){h+='<div class="food-ref-row"><span>'+f.name+'</span><span style="font-family:var(--font-head);font-size:11px;text-align:right;line-height:1.8"><span class="food-protein">'+f.protein+'g pro</span> &middot; '+f.cal+'kcal</span></div>';});
   h+='</div>';
-  nc.innerHTML=h;
-  renderNutritionSummary();
+  nc.innerHTML=h;renderNutritionSummary();
 }
 
-// ── Init ──────────────────────────────────────────────────────
+buildDayTabs();
 buildWeekSelector();
 render();
 </script>
