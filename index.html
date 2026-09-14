@@ -221,60 +221,75 @@ function B1(week){
   la:[E("fsq","Double KB front squat",S1,"8–10",{hint:"Start double 50s"}),
       E("rfess","Rear-foot-elevated split squat",3,"10 / leg"),
       E("rdl","Double KB RDL",3,"10"),
-      E("scarry","Suitcase carry",3,"40 sec / side")],
+      E("scarry","Suitcase march",3,"40 sec / side"),
+      E("hollow","Hollow hold",3,"40 sec",{hint:"Ribs down, low back pinned to the floor"})],
   ua:[E("floorpress","Double KB floor press",S1,"8–10"),
       E("ohp","Double KB strict press",3,"8"),
       E("gorilla","Gorilla row",3,"10 / side"),
-      E("bupress","Bottoms-up press",3,"6 / side",{hint:"Stays at 35 lb — technical lift, not a loading lift"})],
+      E("bupress","Bottoms-up press",3,"6 / side",{hint:"Stays at 35 lb — technical lift, not a loading lift"}),
+      E("renegade","Renegade row",3,"6 / side",{hint:"Hips square — the point is not letting them rotate"}),
+      E("ohmarch","Single-arm overhead march",3,"30 sec / side")],
   lb:[E("swing","Double KB swing",5,"10",{hint:"Full recovery between sets"}),
       E("goblet","Goblet squat",3,"12",{hint:"70 lb"}),
       E("slrdl","Single-leg RDL",3,"10 / leg"),
-      E("frcarry","Front-rack carry",3,"40 sec",{hint:"Double 50s"})],
+      E("frcarry","Front-rack march",3,"40 sec",{hint:"Double 50s"}),
+      E("windmill","Kettlebell windmill",3,"5 / side")],
   ub:[E("pullup","Pull-ups",4,"max − 2",{hint:"Stop two shy of failure on every set"}),
       E("row","Double KB bent-over row",3,"10"),
       E("hkpress","Half-kneeling single-arm press",3,"8 / side"),
       E("pushup","Push-ups",3,"15–20"),
-      E("hollow","Hollow hold",3,"45 sec")],
+      E("hollow","Hollow hold",3,"45 sec"),
+      E("scarry","Suitcase march",3,"45 sec / side",{hint:"Heaviest bell you can hold without leaning"})],
   sa:SAT};
 }
 function B2(){ return {
   la:[E("fsq","Double KB front squat",4,"4–6",{hint:"Double 88s, or 88 + 70"}),
       E("zercher","Zercher sandbag squat",4,"6–8"),
       E("rdl","Double KB RDL",3,"8–10"),
-      E("scarry","Suitcase carry",3,"40 sec / side")],
+      E("scarry","Suitcase march",3,"40 sec / side"),
+      E("hollow","Hollow hold",3,"40 sec")],
   ua:[E("floorpress","Double KB floor press",4,"5",{hint:"Double 70s"}),
       E("ohp","Double KB strict press",4,"4–6"),
       E("gorilla","Gorilla row",3,"8–10"),
-      E("bupress","Bottoms-up press",3,"6 / side",{hint:"Stays at 35 lb"})],
+      E("bupress","Bottoms-up press",3,"6 / side",{hint:"Stays at 35 lb"}),
+      E("renegade","Renegade row",3,"6 / side"),
+      E("ohmarch","Single-arm overhead march",3,"30 sec / side")],
   lb:[E("shoulder","Sandbag shouldering",5,"3 / side"),
       E("swing","Double KB swing",4,"10"),
       E("slrdl","Single-leg RDL",3,"8–10"),
-      E("frcarry","Front-rack carry",3,"40 sec")],
+      E("frcarry","Front-rack march",3,"40 sec"),
+      E("windmill","Kettlebell windmill",3,"5 / side")],
   ub:[E("wpullup","Weighted pull-up",4,"5",{hint:"Vest"}),
       E("row","Double KB bent-over row",4,"6"),
       E("hkpress","Half-kneeling single-arm press",3,"8"),
       E("vpushup","Vest push-ups",3,"12–15"),
-      E("hollow","Hollow hold",3,"45 sec")],
+      E("hollow","Hollow hold",3,"45 sec"),
+      E("scarry","Suitcase march",3,"45 sec / side")],
   sa:SAT};
 }
 function B3(){ return {
   la:[E("fsq","Double KB front squat",5,"3–5",{backoff:true}),
       E("zercher","Zercher sandbag squat",5,"3–5",{backoff:true}),
       E("rdl","Double KB RDL",2,"8"),
-      E("scarry","Suitcase carry",2,"40 sec / side")],
+      E("scarry","Suitcase march",2,"40 sec / side"),
+      E("hollow","Hollow hold",2,"40 sec")],
   ua:[E("floorpress","Double KB floor press",5,"3–5",{backoff:true}),
       E("ohp","Double KB strict press",5,"3–5",{backoff:true}),
       E("gorilla","Gorilla row",2,"8"),
-      E("bupress","Bottoms-up press",2,"6 / side")],
+      E("bupress","Bottoms-up press",2,"6 / side"),
+      E("renegade","Renegade row",2,"6 / side"),
+      E("ohmarch","Single-arm overhead march",2,"30 sec / side")],
   lb:[E("shoulder","Sandbag shouldering",5,"2 / side",{backoff:true}),
       E("swing","Double KB swing",4,"10"),
       E("slrdl","Single-leg RDL",2,"8"),
-      E("frcarry","Front-rack carry",2,"40 sec")],
+      E("frcarry","Front-rack march",2,"40 sec"),
+      E("windmill","Kettlebell windmill",2,"5 / side")],
   ub:[E("wpullup","Weighted pull-up",5,"3–5",{backoff:true}),
       E("row","Double KB bent-over row",5,"5"),
       E("hkpress","Half-kneeling single-arm press",2,"8"),
       E("vpushup","Vest push-ups",2,"12"),
-      E("hollow","Hollow hold",2,"45 sec")],
+      E("hollow","Hollow hold",2,"45 sec"),
+      E("scarry","Suitcase march",2,"45 sec / side")],
   sa:SAT};
 }
 const SAT=[E("emom","EMOM × 15",15,"10 swings / 8 goblet squats / 6 push-ups",
@@ -588,6 +603,7 @@ function renderData(){
       <div class="kv"><span>Sets logged</span><span>${sets}</span></div>
       <div class="kv"><span>Weigh-ins</span><span>${days}</span></div>
       <div class="kv"><span>Stored</span><span>this browser only</span></div>
+      <button class="ghost" id="dig">Copy summary for Claude</button>
       <button class="ghost" id="exp">Download backup</button>
       <button class="ghost" id="impb">Restore from backup</button>
       <input type="file" id="imp" accept="application/json" class="hide">
@@ -602,8 +618,65 @@ function renderData(){
       <button class="ghost danger" id="wipe">Erase everything</button>
     </div>`;
 }
+function fallback(txt,ok){
+  const ta=document.createElement("textarea");
+  ta.value=txt; ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  ta.setSelectionRange(0,txt.length);
+  try{ document.execCommand("copy"); ok(); }catch(e){ alert(txt); }
+  document.body.removeChild(ta);
+}
+function buildDigest(){
+  const L=[],days=["la","ua","lb","ub","sa"];
+  for(let w=1;w<=12;w++){
+    const chunk=[];
+    for(const d of days){
+      const p=dayPlan(w,d); if(!p.ex.length) continue;
+      const lines=[];
+      p.ex.forEach(x=>{
+        const n=x.sets+(x.backoff?1:0),logged=[];
+        let done=0;
+        for(let i=0;i<n;i++){
+          const v=S.sets[key(w,d,x.id,i)]; if(!v) continue;
+          if(v.done) done++;
+          if(v.w!==undefined||v.r!==undefined) logged.push(`${v.w??"?"}x${v.r??"?"}`);
+        }
+        if(logged.length||done) lines.push(`  ${x.name} [rx ${x.sets}x${x.reps}] -> ${logged.join(", ")||"—"} (${done}/${n} done)`);
+      });
+      const nt=S.notes[`w${w}.${d}`];
+      if(lines.length||nt){
+        chunk.push(` ${p.title}${p.deload?" (deload)":""}`);
+        chunk.push(...lines);
+        if(nt) chunk.push(`  note: ${nt}`);
+      }
+    }
+    if(chunk.length){ L.push(`WEEK ${w} — ${PHASE(w)[0]}`); L.push(...chunk); L.push(""); }
+  }
+  const bk=Object.keys(S.bw).sort();
+  if(bk.length){
+    L.push("BODYWEIGHT");
+    L.push(" "+bk.map(k=>`${fmtD(k)} ${S.bw[k]}`).join(" · "));
+    const {cur,prev}=bwStats();
+    if(cur!=null) L.push(` 3-day avg ${cur.toFixed(1)}${prev!=null?`, prior ${prev.toFixed(1)}`:""}`);
+    L.push("");
+  }
+  const fk=Object.keys(S.food).sort().slice(-14);
+  if(fk.length){
+    L.push("PROTEIN (target 180g)");
+    L.push(" "+fk.map(k=>`${fmtD(k)} ${S.food[k].p||0}g`).join(" · "));
+  }
+  return L.length?("12-week block log\n\n"+L.join("\n")):"Nothing logged yet.";
+}
+
 $("#v-data").addEventListener("click",e=>{
   const id=e.target.id;
+  if(id==="dig"){
+    const txt=buildDigest(), b=e.target;
+    const ok=()=>{ b.textContent="Copied — paste into Claude"; setTimeout(()=>b.textContent="Copy summary for Claude",2200); };
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok,()=>fallback(txt,ok)); }
+    else fallback(txt,ok);
+    return;
+  }
   if(id==="exp"){
     const a=document.createElement("a");
     a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:"application/json"}));
