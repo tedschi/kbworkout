@@ -199,6 +199,9 @@ function save(){ clearTimeout(saveT); saveT=setTimeout(()=>{
 
 /* ---------------- program ---------------- */
 const E=(id,name,sets,reps,o={})=>Object.assign({id,name,sets,reps},o);
+/* true if any set was already logged for this exercise in this week/day —
+   used so a program change never hides sets you've already recorded */
+const logged=(w,d,id)=>Object.keys(S.sets).some(k=>k.startsWith(`w${w}.${d}.${id}.`));
 
 function dayPlan(week,day){
   if(week===12){
@@ -229,10 +232,15 @@ function B1(week){
       E("bupress","Bottoms-up press",3,"6 / side",{hint:"Stays at 35 lb — technical lift, not a loading lift"}),
       E("renegade","Renegade row",3,"6 / side",{hint:"Hips square — the point is not letting them rotate"}),
       E("ohmarch","Single-arm overhead march",3,"30 sec / side")],
-  lb:[E("swing","Double KB swing",5,"10",{hint:"Full recovery between sets"}),
-      E("goblet","Goblet squat",3,"12",{hint:"70 lb"}),
+  lb:[E("shoulder","Sandbag shouldering",3,"3 / side",{hint:"Technique only — 80–100 lb. Lap to shoulder, brace, stand tall."}),
+      E("swing","Double KB swing",5,"10",{hint:"Full recovery between sets"}),
+      logged(week,"lb","goblet")
+        ? E("goblet","Goblet squat",3,"12",{hint:"70 lb"})
+        : E("zercher","Zercher sandbag squat",3,"10",{hint:"80–100 lb. Letting elbows and forearms adapt — cap the bag at 120 lb this block."}),
       E("slrdl","Single-leg RDL",3,"10 / leg"),
-      E("frcarry","Front-rack march",3,"40 sec",{hint:"Double 50s"}),
+      (week>=3 && !logged(week,"lb","frcarry"))
+        ? E("bhmarch","Bear-hug sandbag march",3,"40 sec",{hint:"100–120 lb. Optional — front-rack march with double 50s still counts."})
+        : E("frcarry","Front-rack march",3,"40 sec",{hint:"Double 50s"}),
       E("windmill","Kettlebell windmill",3,"5 / side")],
   ub:[E("pullup","Pull-ups",4,"max − 2",{hint:"Stop two shy of failure on every set"}),
       E("row","Double KB bent-over row",3,"10"),
@@ -243,19 +251,20 @@ function B1(week){
   sa:SAT};
 }
 function B2(){ return {
-  la:[E("fsq","Double KB front squat",4,"4–6",{hint:"Double 88s, or 88 + 70"}),
-      E("zercher","Zercher sandbag squat",4,"6–8"),
+  la:[E("zercher","Zercher sandbag squat",4,"4–6",{hint:"Now your main squat — load the bag"}),
+      E("fsq","Double KB front squat",4,"6–8",{hint:"88 + 70 offset — switch sides each set"}),
       E("rdl","Double KB RDL",3,"8–10"),
       E("scarry","Suitcase march",3,"40 sec / side"),
       E("hollow","Hollow hold",3,"40 sec")],
-  ua:[E("floorpress","Double KB floor press",4,"5",{hint:"Double 70s"}),
-      E("ohp","Double KB strict press",4,"4–6"),
+  ua:[E("floorpress","Double KB floor press",4,"5",{hint:"Double 70s. Second 70 not here yet? Sandbag floor press, 110–130 lb."}),
+      E("ohp","Double KB strict press",4,"4–6",{hint:"Double 70s. Under 3 reps on set 1? Back to 50s and note it."}),
       E("gorilla","Gorilla row",3,"8–10"),
       E("bupress","Bottoms-up press",3,"6 / side",{hint:"Stays at 35 lb"}),
       E("renegade","Renegade row",3,"6 / side"),
-      E("ohmarch","Single-arm overhead march",3,"30 sec / side")],
+      E("ohmarch","Single-arm overhead march",3,"30 sec / side"),
+      E("bagpress","Sandbag floor press",2,"15–20",{hint:"Optional finisher, 80–100 lb. Skip when short on time."})],
   lb:[E("shoulder","Sandbag shouldering",5,"3 / side"),
-      E("swing","Double KB swing",4,"10"),
+      E("swing","Double KB swing",4,"10",{hint:"Double 70s, or a heavy single 88"}),
       E("slrdl","Single-leg RDL",3,"8–10"),
       E("frcarry","Front-rack march",3,"40 sec"),
       E("windmill","Kettlebell windmill",3,"5 / side")],
@@ -268,8 +277,8 @@ function B2(){ return {
   sa:SAT};
 }
 function B3(){ return {
-  la:[E("fsq","Double KB front squat",5,"3–5",{backoff:true}),
-      E("zercher","Zercher sandbag squat",5,"3–5",{backoff:true}),
+  la:[E("zercher","Zercher sandbag squat",5,"3–5",{backoff:true}),
+      E("fsq","Double KB front squat",5,"3–5",{backoff:true,hint:"88 + 70 offset — switch sides each set"}),
       E("rdl","Double KB RDL",2,"8"),
       E("scarry","Suitcase march",2,"40 sec / side"),
       E("hollow","Hollow hold",2,"40 sec")],
@@ -295,11 +304,11 @@ function B3(){ return {
 const SAT=[E("emom","EMOM × 15",15,"10 swings / 8 goblet squats / 6 push-ups",
   {hint:"Only if all four weekday sessions happened. Being smoked is the point here."})];
 const TEST=[
-  E("t_fsq","Double 88 front squat",1,"reps at 5"),
+  E("t_zer","Zercher sandbag squat",1,"heaviest for 5"),
   E("t_ohp","Strict double 70 press",1,"max reps"),
   E("t_pull","Weighted pull-up",1,"heaviest for 3"),
   E("t_bag","Sandbag shoulder",1,"heaviest single"),
-  E("t_farm","Farmer carry, double 88s",1,"max distance")];
+  E("t_suit","Suitcase march, 88 lb",1,"max time / side")];
 
 const PHASE=w=> w<=4?["Re-accumulation",false] : w===8?["Deload",true] :
   w<=8?["Load",false] : w===12?["Deload & test",true] : ["Intensification",false];
@@ -326,6 +335,17 @@ function lastTime(week,day,exId){
     if(hits.length){const b=hits[hits.length-1];
       return `wk ${w} · ${b.w?b.w+" lb":""}${b.w&&b.r?" × ":""}${b.r||""}`;}
   }
+  /* lift moved to another day (e.g. Zercher: Lower B in block 1, Lower A from week 5) */
+  for(let w=week-1;w>=1;w--){
+    for(const d of ["la","ua","lb","ub"]){
+      if(d===day) continue;
+      const hits=[];
+      for(let i=0;i<8;i++){const v=S.sets[key(w,d,exId,i)];
+        if(v&&v.done&&(v.w||v.r)) hits.push(v);}
+      if(hits.length){const b=hits[hits.length-1];
+        return `wk ${w} ${DAYNAME[d]} · ${b.w?b.w+" lb":""}${b.w&&b.r?" × ":""}${b.r||""}`;}
+    }
+  }
   return "";
 }
 
@@ -349,6 +369,7 @@ function renderTrain(){
   let h="";
 
   if(w===1&&d==="la") h+=`<div class="callout"><b>This block should feel too easy.</b> You're not detrained in strength, you're detrained in volume. Opening at RPE 9 is how this stalls.</div>`;
+  if(w<=2&&d==="lb") h+=`<div class="callout"><b>Sandbag work this block is practice, not loading.</b> Learn the shoulder and the Zercher light now so week 5 starts heavy instead of starting over. Cap the bag at 120 lb.</div>`;
   if(p.test) h+=`<div class="callout"><b>Test day.</b> Record these. They replace the old barbell numbers.</div>`;
   if(p.deload) h+=`<div class="callout"><b>Deload.</b> Two sets, roughly 60% of last week's loads. Non-negotiable.</div>`;
   if(d==="sa") h+=`<div class="callout"><b>Optional.</b> Skip it unless all four weekday sessions happened.</div>`;
@@ -573,19 +594,28 @@ function renderPlan(){
       <div class="kv"><span>Weeks 9–11 · Intensification</span><span>3–5 reps + back-off</span></div>
       <div class="kv"><span>Week 12 · Deload &amp; test</span><span>Thursday</span></div>
     </div>
-    <div class="card"><h3>Equipment, in priority order</h3>
-      <div class="kv"><span>Doorway pull-up bar</span><span>week 1 · $35</span></div>
-      <div class="kv"><span>Adjustable sandbag, 150–200 lb</span><span>week 1–5 · $120</span></div>
-      <div class="kv"><span>88 lb bell ×1, second later</span><span>week 5 · $250 ea.</span></div>
+    <div class="card"><h3>Sandbag</h3>
+      <ul class="plain">
+        <li><b>Weeks 1–4:</b> technique only — shouldering and Zercher on Lower B, 80–100 lb, never above 120.</li>
+        <li><b>Week 5 on:</b> Zercher becomes the main squat on Lower A; shouldering leads Lower B.</li>
+        <li><b>Floor press:</b> a bridge between double 50s and 70s, or a high-rep finisher. Not a main press.</li>
+      </ul>
+    </div>
+    <div class="card"><h3>Equipment</h3>
+      <div class="kv"><span>Doorway pull-up bar</span><span>in hand</span></div>
+      <div class="kv"><span>Adjustable sandbag, up to 200 lb</span><span>in hand</span></div>
+      <div class="kv"><span>88 lb bell ×1</span><span>week 5 · ~$250</span></div>
+      <div class="kv"><span>Second 70 lb bell</span><span>week 5 · ~$200</span></div>
       <div class="kv"><span>Weight vest, 40–60 lb</span><span>week 5 · $130</span></div>
+      <div class="sub" style="margin-top:8px">No second 88 — the sandbag covers heavy squatting. If you can't get 3 strict double-70 presses in week 5, a pair of 62s beats the second 70.</div>
     </div>
     <div class="card"><h3>Week 12 benchmarks</h3>
       <ul class="plain">
-        <li>Double 88 front squat — reps at 5</li>
+        <li>Zercher sandbag squat — heaviest for 5</li>
         <li>Strict double 70 press — max reps</li>
         <li>Weighted pull-up — heaviest for 3</li>
         <li>Sandbag shoulder — heaviest single</li>
-        <li>Farmer carry, double 88s — max distance</li>
+        <li>Suitcase march, 88 lb — max time per side</li>
       </ul>
     </div>
     <div class="card"><h3>Nutrition</h3>
